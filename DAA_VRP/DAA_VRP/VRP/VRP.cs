@@ -43,14 +43,12 @@
 
         public GreedySolution SolveGreedy()
         {
-            GreedySolution solution = new GreedySolution();
-            return solution;
+            throw new NotImplementedException();
         }
 
         public GreedySolution SolveGrasp()
         {
-            GreedySolution solution = new GreedySolution();
-            return solution;
+            throw new NotImplementedException();
         }
 
     }
