@@ -41,5 +41,17 @@
 
         }
 
+        public GreedySolution SolveGreedy()
+        {
+            GreedySolution solution = new GreedySolution();
+            return solution;
+        }
+
+        public GreedySolution SolveGrasp()
+        {
+            GreedySolution solution = new GreedySolution();
+            return solution;
+        }
+
     }
 }
