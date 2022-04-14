@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DAA_VRP.Solution
+﻿namespace DAA_VRP
 {
-    internal class GraspSolution
+    internal class GraspSolution : Solution
     {
     }
 }

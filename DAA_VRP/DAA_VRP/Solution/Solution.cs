@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DAA_VRP.Solution
+﻿namespace DAA_VRP
 {
-    internal class Solution
+    public abstract class Solution
     {
+        public string problemId = "unspecified";
+        public int numberOfclients = -1;
+        public int totalDistance = -1;
+        public long elapsedMilliseconds = -1;
+
     }
 }
