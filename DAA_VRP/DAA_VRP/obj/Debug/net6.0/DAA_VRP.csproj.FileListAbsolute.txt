@@ -1,0 +1,15 @@
+C:\Users\enriq\source\repos\P07_DAA_VRP\DAA_VRP\DAA_VRP\bin\Debug\net6.0\DAA_VRP.exe
+C:\Users\enriq\source\repos\P07_DAA_VRP\DAA_VRP\DAA_VRP\bin\Debug\net6.0\DAA_VRP.deps.json
+C:\Users\enriq\source\repos\P07_DAA_VRP\DAA_VRP\DAA_VRP\bin\Debug\net6.0\DAA_VRP.runtimeconfig.json
+C:\Users\enriq\source\repos\P07_DAA_VRP\DAA_VRP\DAA_VRP\bin\Debug\net6.0\DAA_VRP.dll
+C:\Users\enriq\source\repos\P07_DAA_VRP\DAA_VRP\DAA_VRP\bin\Debug\net6.0\DAA_VRP.pdb
+C:\Users\enriq\source\repos\P07_DAA_VRP\DAA_VRP\DAA_VRP\obj\Debug\net6.0\DAA_VRP.csproj.AssemblyReference.cache
+C:\Users\enriq\source\repos\P07_DAA_VRP\DAA_VRP\DAA_VRP\obj\Debug\net6.0\DAA_VRP.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\enriq\source\repos\P07_DAA_VRP\DAA_VRP\DAA_VRP\obj\Debug\net6.0\DAA_VRP.AssemblyInfoInputs.cache
+C:\Users\enriq\source\repos\P07_DAA_VRP\DAA_VRP\DAA_VRP\obj\Debug\net6.0\DAA_VRP.AssemblyInfo.cs
+C:\Users\enriq\source\repos\P07_DAA_VRP\DAA_VRP\DAA_VRP\obj\Debug\net6.0\DAA_VRP.csproj.CoreCompileInputs.cache
+C:\Users\enriq\source\repos\P07_DAA_VRP\DAA_VRP\DAA_VRP\obj\Debug\net6.0\DAA_VRP.dll
+C:\Users\enriq\source\repos\P07_DAA_VRP\DAA_VRP\DAA_VRP\obj\Debug\net6.0\refint\DAA_VRP.dll
+C:\Users\enriq\source\repos\P07_DAA_VRP\DAA_VRP\DAA_VRP\obj\Debug\net6.0\DAA_VRP.pdb
+C:\Users\enriq\source\repos\P07_DAA_VRP\DAA_VRP\DAA_VRP\obj\Debug\net6.0\DAA_VRP.genruntimeconfig.cache
+C:\Users\enriq\source\repos\P07_DAA_VRP\DAA_VRP\DAA_VRP\obj\Debug\net6.0\ref\DAA_VRP.dll
