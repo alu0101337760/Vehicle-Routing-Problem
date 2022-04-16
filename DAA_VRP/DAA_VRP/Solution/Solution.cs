@@ -6,6 +6,6 @@
         public int numberOfclients = -1;
         public int totalDistance = -1;
         public long elapsedMilliseconds = -1;
-
+        public List<List<int>> paths = new List<List<int>>();
     }
 }

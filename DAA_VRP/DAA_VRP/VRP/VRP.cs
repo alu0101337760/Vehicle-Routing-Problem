@@ -41,8 +41,20 @@
 
         }
 
+
+
         public GreedySolution SolveGreedy()
         {
+            HashSet<int> nodes = new HashSet<int>(Enumerable.Range(1, numberOfClients).ToList());
+            List<List<int>> paths = new List<List<int>>();            
+
+            for (int i = 0; i < numberOfVehicles; i++)
+            {
+                paths.Add(new List<int>());
+            }
+
+            
+
             throw new NotImplementedException();
         }
 
