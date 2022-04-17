@@ -2,12 +2,17 @@
 {
     public class VRP
     {
-        
+
         string sourceFilename = "";
         int numberOfClients = -1;
         int numberOfVehicles = -1;
         int totalDistance = 0;
         List<List<int>> distanceMatrix = new List<List<int>>();
+
+        public VRP(string filename)
+        {
+            BuildFromFile(filename);
+        }
 
         private int RetrieveNumberOfClients(string line)
         {
@@ -82,10 +87,10 @@
                 {
                     int lastNode = paths[i][paths[i].Count - 1];
                     int closestNode = findMinDistanceIndex(lastNode, nodes);
-                    
+
                     paths[i].Add(closestNode);
                     nodes.Remove(closestNode);
-                    
+
                     totalDistance += distanceMatrix[lastNode][closestNode];
                 }
             }
@@ -99,7 +104,7 @@
             }
 
 
-            return new GreedySolution(sourceFilename, numberOfClients, totalDistance, -1, paths );
+            return new GreedySolution(sourceFilename, numberOfClients, totalDistance, -1, paths);
         }
 
         public GraspSolution SolveGrasp()

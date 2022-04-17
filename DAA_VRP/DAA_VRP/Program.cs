@@ -1,17 +1,27 @@
-﻿
+﻿using System.IO;
 namespace DAA_VRP
 {
     class Program
     {
-        public static void Main()
+        public static void Main(string[] args)
         {
-            // Create a new instance of the problem.
-            VRP vrp = new VRP();
+            string path;
+            if (args.Length > 1)
+            {
+                path = args[0];
+            }
+            else
+            {
+                path = "C:\\Users\\enriq\\source\\repos\\P07_DAA_VRP\\DAA_VRP\\DAA_VRP\\Input_files\\";
+            }
 
-            string testFile = "C:\\Users\\enriq\\source\\repos\\P07_DAA_VRP\\DAA_VRP\\DAA_VRP\\I40j_2m_S1_1.txt";
+            foreach (string filename in Directory.EnumerateFiles(path, "*.txt"))
+            {
+                VRP vrp = new VRP(filename);
+                GreedySolution greedySolution = vrp.SolveGreedy();
+                Console.WriteLine(greedySolution.GetInfo());
 
-            vrp.BuildFromFile(testFile);
-            GreedySolution solution =  vrp.SolveGreedy();
+            }
 
         }
     }
