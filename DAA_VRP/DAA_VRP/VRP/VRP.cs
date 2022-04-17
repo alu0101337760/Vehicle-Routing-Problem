@@ -6,6 +6,7 @@
         string sourceFilename = "";
         int numberOfClients = -1;
         int numberOfVehicles = -1;
+        int totalDistance = -1;
         List<List<int>> distanceMatrix = new List<List<int>>();
 
         public VRP(string filename)
@@ -49,98 +50,42 @@
 
         }
 
-
-        private int FindMinDistanceIndex(int currentNode, HashSet<int> availableNodes)
-        {
-            int minCost = int.MaxValue;
-            int minNode = -1;
-            foreach (int node in availableNodes)
-            {
-                if (distanceMatrix[currentNode][node] < minCost)
-                {
-                    minCost = distanceMatrix[currentNode][node];
-                    minNode = node;
-                }
-            }
-            return minNode;
-        }
-
-        public GreedySolution SolveGreedy()
-        {
-            HashSet<int> nodes = new HashSet<int>(Enumerable.Range(1, numberOfClients - 1).ToList());
-            List<List<int>> paths = new List<List<int>>();
-
-            int totalDistance = 0;
-
-            for (int i = 0; i < numberOfVehicles; i++)
-            {
-                paths.Add(new List<int>());
-                paths[i].Add(0);
-            }
-
-            int numberOfPaths = numberOfVehicles;
-            while (nodes.Count > 0)
-            {
-                if (nodes.Count < numberOfPaths)
-                {
-                    numberOfPaths = nodes.Count;
-                }
-                for (int i = 0; i < numberOfPaths; i++)
-                {
-                    int lastNode = paths[i][paths[i].Count - 1];
-                    int closestNode = FindMinDistanceIndex(lastNode, nodes);
-
-                    paths[i].Add(closestNode);
-                    nodes.Remove(closestNode);
-
-                    totalDistance += distanceMatrix[lastNode][closestNode];
-                }
-            }
-
-            for (int i = 0; i < numberOfVehicles; i++)
-            {
-
-                int lastNode = paths[i][paths[i].Count - 1];
-                paths[i].Add(0);
-                totalDistance += distanceMatrix[lastNode][0];
-            }
-
-
-            return new GreedySolution(sourceFilename, numberOfClients, totalDistance, -1, paths);
-        }
-
-
         private List<int> MakeRCL(HashSet<int> availableNodes, int currentNode, int rclSize = 1)
         {
 
             List<int> rcl = Enumerable.Repeat(availableNodes.ToList()[0], rclSize).ToList();
             List<int> distance = distanceMatrix[currentNode];
 
-            foreach (int candidate in availableNodes)
+            foreach (int node in availableNodes)
             {
+                int candidate = node;
                 int currentMinDistance = distance[candidate];
-                for (int i = rcl.Count - 1; i >= 0; i--)
-                {
 
-                    if (currentMinDistance >= distance[rcl[i]])
+                if (currentMinDistance < distance[rcl[rcl.Count - 1]])
+                {
+                    for (int i = 0; i < rcl.Count; i++)
                     {
-                        break;
+                        if (currentMinDistance < distance[rcl[i]])
+                        {
+                            currentMinDistance = distance[rcl[i]];
+
+                            int temp = rcl[i];
+                            rcl[i] = candidate;
+                            candidate = temp;
+                        }
                     }
-                    currentMinDistance = distance[rcl[i]];
-                    rcl[i] = candidate;
                 }
             }
 
             return rcl;
         }
 
-        public GraspSolution GraspConstructivePhase(int rclSize)
+        private List<List<int>> GreedyWithRCL(int rclSize)
         {
-            GraspSolution solution = new GraspSolution(sourceFilename, numberOfClients, rclSize);
             HashSet<int> availableNodes = new HashSet<int>(Enumerable.Range(1, numberOfClients - 1).ToList());
             List<List<int>> paths = new List<List<int>>();
 
-            int totalDistance = 0;
+            totalDistance = 0;
 
             for (int i = 0; i < numberOfVehicles; i++)
             {
@@ -159,8 +104,6 @@
                 {
                     int lastNode = paths[i][paths[i].Count - 1];
 
-                    int minNode = FindMinDistanceIndex(lastNode, availableNodes);
-
                     List<int> rcl = MakeRCL(availableNodes, lastNode, rclSize);
                     int randomNode = rcl[new Random().Next(rcl.Count)];
 
@@ -178,6 +121,22 @@
                 totalDistance += distanceMatrix[lastNode][0];
             }
 
+            return paths;
+        }
+
+
+        public GreedySolution SolveGreedy()
+        {
+            List<List<int>> paths = GreedyWithRCL(1);
+
+            return new GreedySolution(sourceFilename, numberOfClients, totalDistance, -1, paths);
+        }
+
+        public GraspSolution GraspConstructivePhase(int rclSize)
+        {
+            List<List<int>> paths = GreedyWithRCL(rclSize);
+
+            GraspSolution solution = new GraspSolution(sourceFilename, numberOfClients, rclSize);
             solution.paths = paths;
             solution.totalDistance = totalDistance;
             return solution;
