@@ -1,5 +1,4 @@
-﻿using System.IO;
-namespace DAA_VRP
+﻿namespace DAA_VRP
 {
     class Program
     {
@@ -28,16 +27,13 @@ namespace DAA_VRP
 
             List<GreedySolution> greedySolutions = new List<GreedySolution>();
 
-
             foreach (string filename in Directory.EnumerateFiles(path, "*.txt"))
             {
-                VRP vrp = new VRP(filename);               
+                VRP vrp = new VRP(filename);
                 greedySolutions.Add(vrp.SolveGreedy());
             }
 
             PrintGreedySolutions(greedySolutions);
-
-
         }
     }
 }
