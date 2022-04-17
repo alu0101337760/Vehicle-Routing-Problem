@@ -7,7 +7,7 @@
             this.numberOfclients = numberOfClients;
             this.totalDistance = totalDistance;
             this.elapsedMilliseconds = elapsedMilliseconds;
-            this.paths = paths; ;
+            this.paths = paths; 
         }
     }
 }

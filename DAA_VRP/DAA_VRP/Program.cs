@@ -11,6 +11,7 @@ namespace DAA_VRP
             string testFile = "C:\\Users\\enriq\\source\\repos\\P07_DAA_VRP\\DAA_VRP\\DAA_VRP\\I40j_2m_S1_1.txt";
 
             vrp.BuildFromFile(testFile);
+            GreedySolution solution =  vrp.SolveGreedy();
 
         }
     }

@@ -1,6 +1,6 @@
 ﻿namespace DAA_VRP
 {
-    internal class GraspSolution : Solution
+    public class GraspSolution : Solution
     {
     }
 }

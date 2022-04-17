@@ -2,8 +2,11 @@
 {
     public class VRP
     {
+        
+        string sourceFilename = "";
         int numberOfClients = -1;
         int numberOfVehicles = -1;
+        int totalDistance = 0;
         List<List<int>> distanceMatrix = new List<List<int>>();
 
         private int RetrieveNumberOfClients(string line)
@@ -34,6 +37,7 @@
 
         public void BuildFromFile(string filename)
         {
+            sourceFilename = filename;
             List<string> lines = new List<string>(File.ReadAllLines(filename));
             this.numberOfClients = RetrieveNumberOfClients(lines[0]);
             this.numberOfVehicles = RetrieveNumberOfVehicles(lines[1]);
@@ -41,24 +45,64 @@
 
         }
 
-
+        private int findMinDistanceIndex(int currentNode, HashSet<int> availableNodes)
+        {
+            int minCost = int.MaxValue;
+            int minNode = -1;
+            foreach (int node in availableNodes)
+            {
+                if (distanceMatrix[currentNode][node] < minCost)
+                {
+                    minCost = distanceMatrix[currentNode][node];
+                    minNode = node;
+                }
+            }
+            return minNode;
+        }
 
         public GreedySolution SolveGreedy()
         {
-            HashSet<int> nodes = new HashSet<int>(Enumerable.Range(1, numberOfClients).ToList());
-            List<List<int>> paths = new List<List<int>>();            
+            HashSet<int> nodes = new HashSet<int>(Enumerable.Range(1, numberOfClients - 1).ToList());
+            List<List<int>> paths = new List<List<int>>();
 
             for (int i = 0; i < numberOfVehicles; i++)
             {
                 paths.Add(new List<int>());
+                paths[i].Add(0);
             }
 
-            
+            int numberOfPaths = numberOfVehicles;
+            while (nodes.Count > 0)
+            {
+                if (nodes.Count < numberOfPaths)
+                {
+                    numberOfPaths = nodes.Count;
+                }
+                for (int i = 0; i < numberOfPaths; i++)
+                {
+                    int lastNode = paths[i][paths[i].Count - 1];
+                    int closestNode = findMinDistanceIndex(lastNode, nodes);
+                    
+                    paths[i].Add(closestNode);
+                    nodes.Remove(closestNode);
+                    
+                    totalDistance += distanceMatrix[lastNode][closestNode];
+                }
+            }
 
-            throw new NotImplementedException();
+            for (int i = 0; i < numberOfVehicles; i++)
+            {
+
+                int lastNode = paths[i][paths[i].Count - 1];
+                paths[i].Add(0);
+                totalDistance += distanceMatrix[lastNode][0];
+            }
+
+
+            return new GreedySolution(sourceFilename, numberOfClients, totalDistance, -1, paths );
         }
 
-        public GreedySolution SolveGrasp()
+        public GraspSolution SolveGrasp()
         {
             throw new NotImplementedException();
         }
