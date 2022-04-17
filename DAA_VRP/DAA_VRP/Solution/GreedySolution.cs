@@ -4,7 +4,8 @@
     {
         public GreedySolution(string problemId, int numberOfClients, int totalDistance, long elapsedMilliseconds, List<List<int>> paths)
         {
-            this.problemId = problemId;
+            string[] splittedProblemId = problemId.Split('\\');
+            this.problemId = splittedProblemId[splittedProblemId.Length - 1];
             this.numberOfClients = numberOfClients;
             this.totalDistance = totalDistance;
             this.elapsedMilliseconds = elapsedMilliseconds;
@@ -13,7 +14,7 @@
 
         public override string GetInfo()
         {
-            return problemId + "\t" + numberOfClients + "\t" + totalDistance + "\t" + elapsedMilliseconds;
+            return String.Format("{0,4} {1,4} {2,4} {3,4}", problemId, numberOfClients, totalDistance, elapsedMilliseconds);
         }
 
         public override string GetPaths()

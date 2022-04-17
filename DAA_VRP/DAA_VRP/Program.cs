@@ -6,7 +6,7 @@ namespace DAA_VRP
         public static void PrintGreedySolutions(List<GreedySolution> greedySolutions)
         {
             Console.WriteLine("Greedy Solutions:");
-            Console.WriteLine("Problem ID\tNumber of nodes\tTotal cost\tElapsed milliseconds");
+            Console.WriteLine(String.Format("\tfilename\tnodes\tcost\tmilliseconds"));
             foreach (GreedySolution solution in greedySolutions)
             {
                 Console.WriteLine(solution.problemId + "\t" + solution.numberOfClients + "\t" + solution.totalDistance + "\t" + solution.elapsedMilliseconds);
