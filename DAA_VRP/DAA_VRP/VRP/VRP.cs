@@ -50,7 +50,8 @@
 
         }
 
-        private int findMinDistanceIndex(int currentNode, HashSet<int> availableNodes)
+
+        private int FindMinDistanceIndex(int currentNode, HashSet<int> availableNodes)
         {
             int minCost = int.MaxValue;
             int minNode = -1;
@@ -86,7 +87,7 @@
                 for (int i = 0; i < numberOfPaths; i++)
                 {
                     int lastNode = paths[i][paths[i].Count - 1];
-                    int closestNode = findMinDistanceIndex(lastNode, nodes);
+                    int closestNode = FindMinDistanceIndex(lastNode, nodes);
 
                     paths[i].Add(closestNode);
                     nodes.Remove(closestNode);
@@ -105,6 +106,67 @@
 
 
             return new GreedySolution(sourceFilename, numberOfClients, totalDistance, -1, paths);
+        }
+
+
+        private List<int> MakeRCL(HashSet<int> availableNodes, int currentNode, int rclSize = 1)
+        {
+            List<int> rcl = Enumerable.Repeat(int.MaxValue, rclSize).ToList();
+            List<int> distance = distanceMatrix[currentNode];
+
+            foreach (int candidate in availableNodes)
+            {
+                int currentMinDistance = distance[candidate];
+                for(int i =0; i < rcl.Count; i++)
+                {
+                    if()
+                }
+            }
+
+            return rcl;
+        }
+
+        private GraspSolution GraspConstructivePhase(int rclSize)
+        {
+            GraspSolution solution = new GraspSolution(sourceFilename, numberOfClients, rclSize);
+            HashSet<int> nodes = new HashSet<int>(Enumerable.Range(1, numberOfClients - 1).ToList());
+            List<List<int>> paths = new List<List<int>>();
+
+            for (int i = 0; i < numberOfVehicles; i++)
+            {
+                paths.Add(new List<int>());
+                paths[i].Add(0);
+            }
+
+            int numberOfPaths = numberOfVehicles;
+            while (nodes.Count > 0)
+            {
+                if (nodes.Count < numberOfPaths)
+                {
+                    numberOfPaths = nodes.Count;
+                }
+                for (int i = 0; i < numberOfPaths; i++)
+                {
+                    int lastNode = paths[i][paths[i].Count - 1];
+                    int closestNode = FindMinDistanceIndex(lastNode, nodes);
+
+                    paths[i].Add(closestNode);
+                    nodes.Remove(closestNode);
+
+                    totalDistance += distanceMatrix[lastNode][closestNode];
+                }
+            }
+
+            for (int i = 0; i < numberOfVehicles; i++)
+            {
+                int lastNode = paths[i][paths[i].Count - 1];
+                paths[i].Add(0);
+                totalDistance += distanceMatrix[lastNode][0];
+            }
+
+
+            return solution;
+
         }
 
         public GraspSolution SolveGrasp()
