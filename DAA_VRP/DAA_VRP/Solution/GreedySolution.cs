@@ -5,7 +5,7 @@
         public GreedySolution(string problemId, int numberOfClients, int totalDistance, long elapsedMilliseconds, List<List<int>> paths)
         {
             this.problemId = problemId;
-            this.numberOfclients = numberOfClients;
+            this.numberOfClients = numberOfClients;
             this.totalDistance = totalDistance;
             this.elapsedMilliseconds = elapsedMilliseconds;
             this.paths = paths;
@@ -13,7 +13,7 @@
 
         public override string GetInfo()
         {
-            return problemId + "\t" + numberOfclients + "\t" + totalDistance + "\t" + elapsedMilliseconds;
+            return problemId + "\t" + numberOfClients + "\t" + totalDistance + "\t" + elapsedMilliseconds;
         }
 
         public override string GetPaths()

@@ -3,6 +3,15 @@ namespace DAA_VRP
 {
     class Program
     {
+        public static void PrintGreedySolutions(List<GreedySolution> greedySolutions)
+        {
+            Console.WriteLine("Greedy Solutions:");
+            Console.WriteLine("Problem ID\tNumber of nodes\tTotal cost\tElapsed milliseconds");
+            foreach (GreedySolution solution in greedySolutions)
+            {
+                Console.WriteLine(solution.problemId + "\t" + solution.numberOfClients + "\t" + solution.totalDistance + "\t" + solution.elapsedMilliseconds);
+            }
+        }
         public static void Main(string[] args)
         {
             string path;
@@ -15,14 +24,16 @@ namespace DAA_VRP
                 path = "C:\\Users\\enriq\\source\\repos\\P07_DAA_VRP\\DAA_VRP\\DAA_VRP\\Input_files\\";
             }
 
+            List<GreedySolution> greedySolutions = new List<GreedySolution>();
+
+
             foreach (string filename in Directory.EnumerateFiles(path, "*.txt"))
             {
                 VRP vrp = new VRP(filename);
-                GreedySolution greedySolution = vrp.SolveGreedy();
-                Console.WriteLine(greedySolution.GetInfo());
-
+                greedySolutions.Add(vrp.SolveGreedy());
             }
 
+            PrintGreedySolutions(greedySolutions);
         }
     }
 }
