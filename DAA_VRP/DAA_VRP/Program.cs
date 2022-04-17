@@ -12,6 +12,8 @@ namespace DAA_VRP
                 Console.WriteLine(solution.problemId + "\t" + solution.numberOfClients + "\t" + solution.totalDistance + "\t" + solution.elapsedMilliseconds);
             }
         }
+
+
         public static void Main(string[] args)
         {
             string path;
@@ -30,10 +32,14 @@ namespace DAA_VRP
             foreach (string filename in Directory.EnumerateFiles(path, "*.txt"))
             {
                 VRP vrp = new VRP(filename);
-                greedySolutions.Add(vrp.SolveGreedy());
+                GreedySolution solg = vrp.SolveGreedy();
+                GraspSolution sol = vrp.GraspConstructivePhase(1);
+                //greedySolutions.Add(vrp.SolveGreedy());
             }
 
             PrintGreedySolutions(greedySolutions);
+
+
         }
     }
 }

@@ -6,7 +6,6 @@
         string sourceFilename = "";
         int numberOfClients = -1;
         int numberOfVehicles = -1;
-        int totalDistance = 0;
         List<List<int>> distanceMatrix = new List<List<int>>();
 
         public VRP(string filename)
@@ -71,6 +70,8 @@
             HashSet<int> nodes = new HashSet<int>(Enumerable.Range(1, numberOfClients - 1).ToList());
             List<List<int>> paths = new List<List<int>>();
 
+            int totalDistance = 0;
+
             for (int i = 0; i < numberOfVehicles; i++)
             {
                 paths.Add(new List<int>());
@@ -111,26 +112,35 @@
 
         private List<int> MakeRCL(HashSet<int> availableNodes, int currentNode, int rclSize = 1)
         {
-            List<int> rcl = Enumerable.Repeat(int.MaxValue, rclSize).ToList();
+
+            List<int> rcl = Enumerable.Repeat(availableNodes.ToList()[0], rclSize).ToList();
             List<int> distance = distanceMatrix[currentNode];
 
             foreach (int candidate in availableNodes)
             {
                 int currentMinDistance = distance[candidate];
-                for(int i =0; i < rcl.Count; i++)
+                for (int i = rcl.Count - 1; i >= 0; i--)
                 {
-                    if()
+
+                    if (currentMinDistance >= distance[rcl[i]])
+                    {
+                        break;
+                    }
+                    currentMinDistance = distance[rcl[i]];
+                    rcl[i] = candidate;
                 }
             }
 
             return rcl;
         }
 
-        private GraspSolution GraspConstructivePhase(int rclSize)
+        public GraspSolution GraspConstructivePhase(int rclSize)
         {
             GraspSolution solution = new GraspSolution(sourceFilename, numberOfClients, rclSize);
-            HashSet<int> nodes = new HashSet<int>(Enumerable.Range(1, numberOfClients - 1).ToList());
+            HashSet<int> availableNodes = new HashSet<int>(Enumerable.Range(1, numberOfClients - 1).ToList());
             List<List<int>> paths = new List<List<int>>();
+
+            int totalDistance = 0;
 
             for (int i = 0; i < numberOfVehicles; i++)
             {
@@ -139,21 +149,25 @@
             }
 
             int numberOfPaths = numberOfVehicles;
-            while (nodes.Count > 0)
+            while (availableNodes.Count > 0)
             {
-                if (nodes.Count < numberOfPaths)
+                if (availableNodes.Count < numberOfPaths)
                 {
-                    numberOfPaths = nodes.Count;
+                    numberOfPaths = availableNodes.Count;
                 }
                 for (int i = 0; i < numberOfPaths; i++)
                 {
                     int lastNode = paths[i][paths[i].Count - 1];
-                    int closestNode = FindMinDistanceIndex(lastNode, nodes);
 
-                    paths[i].Add(closestNode);
-                    nodes.Remove(closestNode);
+                    int minNode = FindMinDistanceIndex(lastNode, availableNodes);
 
-                    totalDistance += distanceMatrix[lastNode][closestNode];
+                    List<int> rcl = MakeRCL(availableNodes, lastNode, rclSize);
+                    int randomNode = rcl[new Random().Next(rcl.Count)];
+
+                    paths[i].Add(randomNode);
+                    availableNodes.Remove(randomNode);
+
+                    totalDistance += distanceMatrix[lastNode][randomNode];
                 }
             }
 
@@ -164,7 +178,8 @@
                 totalDistance += distanceMatrix[lastNode][0];
             }
 
-
+            solution.paths = paths;
+            solution.totalDistance = totalDistance;
             return solution;
 
         }
