@@ -31,10 +31,8 @@ namespace DAA_VRP
 
             foreach (string filename in Directory.EnumerateFiles(path, "*.txt"))
             {
-                VRP vrp = new VRP(filename);
-                //GreedySolution solg = vrp.SolveGreedy();
-                GraspSolution sol = vrp.GraspConstructivePhase(5);
-                //greedySolutions.Add(vrp.SolveGreedy());
+                VRP vrp = new VRP(filename);               
+                greedySolutions.Add(vrp.SolveGreedy());
             }
 
             PrintGreedySolutions(greedySolutions);
