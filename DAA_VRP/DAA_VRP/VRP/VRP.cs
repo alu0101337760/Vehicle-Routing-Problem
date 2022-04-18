@@ -24,7 +24,7 @@
         private int RetrieveNumberOfClients(string line)
         {
             string[] split = line.Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
-            return int.Parse(split[1]);
+            return int.Parse(split[1]) + 1;
         }
 
         /// <summary>
@@ -45,12 +45,9 @@
         {
             for (int i = 0; i < numberOfClients; i++)
             {
-                List<int> row = new List<int>();
-                for (int j = 0; j < numberOfClients; j++)
-                {
-                    row.Add(int.Parse(lines[i].Split(new char[0], StringSplitOptions.RemoveEmptyEntries)[j]));
-                }
-                distanceMatrix.Add(row);
+                string[] row = lines[i].Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
+                distanceMatrix.Add(new List<int> (Array.ConvertAll<string, int>(row, int.Parse)));
+    
             }
         }
 
@@ -65,7 +62,7 @@
             List<string> lines = new List<string>(File.ReadAllLines(filename));
             this.numberOfClients = RetrieveNumberOfClients(lines[0]);
             this.numberOfVehicles = RetrieveNumberOfVehicles(lines[1]);
-            buildDistanceMatrix(lines.GetRange(3, lines.Count - 4));
+            buildDistanceMatrix(lines.GetRange(3, lines.Count - 3));
 
         }
 
