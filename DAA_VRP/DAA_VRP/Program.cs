@@ -29,7 +29,8 @@
 
             foreach (string filename in Directory.EnumerateFiles(path, "*.txt"))
             {
-                VRP vrp = new VRP(filename);
+                Problem problem = new Problem(filename);
+                VRP vrp = new VRP(problem);
                 greedySolutions.Add(vrp.SolveGreedy());
             }
 
