@@ -6,13 +6,14 @@
     public class VRP
     {
 
-        enum GraspTypes {
+        enum GraspTypes
+        {
             GRASP_REINSERTION,
             GRASP_SINGLE_ROUTE_SWAP,
             GRASP_MULTI_ROUTE_SWAP,
             GRASP_2_OPT
         };
-    
+
 
         string sourceFilename = "";
         int numberOfClients = -1;
@@ -143,9 +144,23 @@
 
         }
 
+        private GraspSolution GraspReinsertion(GraspSolution solution)
+        {
+            List<List<int>> paths = solution.paths;
+            int bestDistance = solution.totalDistance;
+
+           while (true)
+            {
+                
+            }
+
+            return solution;
+        }
+
         private GraspSolution LocalSearch(GraspSolution solution, GraspTypes type = GraspTypes.GRASP_SINGLE_ROUTE_SWAP)
         {
-            switch (type) {
+            switch (type)
+            {
                 case GraspTypes.GRASP_2_OPT:
                     break;
 
@@ -157,7 +172,7 @@
 
                 case GraspTypes.GRASP_SINGLE_ROUTE_SWAP:
                     break;
-                    
+
             }
             return solution;
         }
@@ -165,10 +180,10 @@
         public GraspSolution SolveGrasp(int rclSize)
         {
             GraspSolution solution = new GraspSolution(sourceFilename, numberOfClients, rclSize);
-            for(int i = 0; i < 5000; i++)
+            for (int i = 0; i < 5000; i++)
             {
                 GraspSolution newSolution = GraspConstructivePhase(rclSize);
-                
+
                 if (newSolution.totalDistance < solution.totalDistance)
                 {
                     solution = newSolution;
