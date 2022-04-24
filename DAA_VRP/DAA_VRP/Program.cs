@@ -16,7 +16,7 @@
         public static void Main(string[] args)
         {
             int RCL_SIZE = 2;
-            GraspTypes DEFAULT_TYPE = GraspTypes.GRASP_REINSERTION_INTER;
+            GraspTypes DEFAULT_TYPE = GraspTypes.GRASP_MULTI_ROUTE_SWAP;
             string path;
             if (args.Length > 1)
             {
@@ -38,8 +38,6 @@
                 GraspSolution solution = vrp.SolveGrasp(RCL_SIZE, DEFAULT_TYPE);                
                 graspSolutions.Add(solution);
             }
-
-   
 
             PrintGreedySolutions(greedySolutions);
 
