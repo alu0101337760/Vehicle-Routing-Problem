@@ -28,7 +28,11 @@
 
         public void SetPaths(List<List<int>> paths)
         {
-            this.paths = paths;
+            this.paths = new List<List<int>>();
+            for (int i = 0; i < paths.Count; i++)
+            {
+                this.paths.Add(new List<int>(paths[i]));
+            }
         }
 
 

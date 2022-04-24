@@ -15,7 +15,7 @@
 
         public static void Main(string[] args)
         {
-            int RCL_SIZE = 5;
+            int RCL_SIZE = 2;
             GraspTypes DEFAULT_TYPE = GraspTypes.GRASP_REINSERTION_INTRA;
             string path;
             if (args.Length > 1)
