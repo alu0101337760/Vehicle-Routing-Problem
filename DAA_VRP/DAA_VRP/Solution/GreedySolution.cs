@@ -18,20 +18,7 @@
 
         public override string GetPathsString()
         {
-            string output = "{ 0, ";
-
-            for (int i = 1; i < this.paths.Count - 1; i++)
-            {
-                if (paths[i] == 0)
-                {
-                    output += "0 }\n{ 0, ";
-                }
-                else
-                {
-                    output += paths[i]+ ", ";
-                }
-            }
-            output += "0 }\n";
+            string output = "";
             return output;
         }
 
