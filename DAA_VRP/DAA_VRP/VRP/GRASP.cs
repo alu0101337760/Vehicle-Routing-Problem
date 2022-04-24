@@ -2,52 +2,82 @@
 
 namespace DAA_VRP
 {
+    public enum GraspTypes
+    {
+        GRASP_REINSERTION_INTRA,
+        GRASP_REINSERTION_INTER,
+        GRASP_SINGLE_ROUTE_SWAP,
+        GRASP_MULTI_ROUTE_SWAP,
+        GRASP_2_OPT
+    };
+
     public class GRASP
     {
         Problem problem;
         int numberOfClients = -1;
-        int numberOfVehicles = -1;
         int totalDistance = -1;
         List<List<int>> distanceMatrix = new List<List<int>>();
-        
-        enum GraspTypes
-        {
-            GRASP_REINSERTION_INTRA,
-            GRASP_REINSERTION_INTER,
-            GRASP_SINGLE_ROUTE_SWAP,
-            GRASP_MULTI_ROUTE_SWAP,
-            GRASP_2_OPT
-        };
-        
+
         public GRASP(Problem problem)
         {
             this.numberOfClients = problem.numberOfClients;
-            this.numberOfVehicles = problem.numberOfVehicles;
             this.distanceMatrix = problem.distanceMatrix;
             this.problem = problem;
         }
 
-        private GraspSolution ReinsertPath(List<int> path)
+        private GraspSolution ReinsertPath(GraspSolution solution, int index)
         {
+            List<int> path = solution.paths[index];
+            int nodeToInsert = -1;
+            int positionToInsert = -1;
+            int minDistance = solution.totalDistance;
 
-            for (int i = 0; i < path.Count; i++)
+            for (int i = 1; i < path.Count - 1; i++)
             {
                 int currentNode = path[i];
-                int nextNode = path[i + 1];
-                for (int cantidate = nextNode; cantidate < numberOfClients; cantidate++)
-                {
+                int currentDistance = solution.totalDistance -
+                    distanceMatrix[currentNode][currentNode+1] -
+                    distanceMatrix[currentNode-1][currentNode];
 
+                for (int candidate = currentNode+1; candidate < numberOfClients; candidate++)
+                {
+                    int nextCandidate = candidate + 1;
+                    int candidateDistance = currentDistance +
+                        distanceMatrix[candidate][currentNode] +
+                        distanceMatrix[currentNode][nextCandidate];
+
+                    if (candidateDistance < minDistance)
+                    {
+                        minDistance = candidateDistance;
+                        nodeToInsert = currentNode;
+                        positionToInsert = candidate;
+                    }
                 }
             }
-            throw new NotImplementedException();
+            
+            path.Remove(nodeToInsert);
+            path.Insert(positionToInsert, nodeToInsert);
+            solution.totalDistance = minDistance;
+            return solution;
         }
-
         public GraspSolution GraspReinsertionIntra(GraspSolution solution)
         {
-            List<List<int>> paths = solution.paths;
-            for (int i = 0; i < paths.Count; i++)
+            int MAX_ITERATIONS = 1000;
+            List<int> pathsToCheck = Enumerable.Range(0, solution.paths.Count).ToList();
+            int i = 0;
+            while (pathsToCheck.Count > 0 || i > MAX_ITERATIONS)
             {
-                List<int> currentPath = paths[i];
+                GraspSolution currentSolution = ReinsertPath(solution, pathsToCheck[i]);
+                if (currentSolution.totalDistance == solution.totalDistance)
+                {
+                    pathsToCheck.RemoveAt(i);
+                }
+                if (currentSolution.totalDistance < solution.totalDistance)
+                {
+                    solution = currentSolution;
+                    pathsToCheck = Enumerable.Range(0, solution.paths.Count).ToList();
+                }
+                i++;
             }
 
             return solution;
@@ -67,7 +97,7 @@ namespace DAA_VRP
                     break;
 
                 case GraspTypes.GRASP_REINSERTION_INTRA:
-                    break;
+                    return GraspReinsertionIntra(solution);
 
                 case GraspTypes.GRASP_SINGLE_ROUTE_SWAP:
                     break;
@@ -84,29 +114,30 @@ namespace DAA_VRP
         private GraspSolution GraspConstructivePhase(int rclSize)
         {
             GreedyRCL greedy = new GreedyRCL(problem);
-            
+
             List<List<int>> paths = greedy.GreedyWithRCL(rclSize);
 
             GraspSolution solution = new GraspSolution(problem.sourceFilename, numberOfClients, rclSize);
             solution.SetPaths(paths);
             solution.totalDistance = totalDistance;
             return solution;
-        }        
-        
-        public GraspSolution Solve(Problem problem, int rclSize)
+        }
+
+        public GraspSolution Solve(int rclSize, GraspTypes type)
         {
-            GraspSolution solution = new GraspSolution(problem.sourceFilename, problem.numberOfClients, rclSize);
+            GraspSolution bestSolution = new GraspSolution(problem.sourceFilename, numberOfClients, rclSize);
+            bestSolution.totalDistance = int.MaxValue;
             for (int i = 0; i < 5000; i++)
             {
-                GraspSolution newSolution = GraspConstructivePhase(rclSize);
-                
-                if (newSolution.totalDistance < solution.totalDistance)
+                GraspSolution candidate = GraspConstructivePhase(rclSize);
+                GraspSolution processed = LocalSearch(candidate, type);
+                if (processed.totalDistance < bestSolution.totalDistance)
                 {
-                    solution = newSolution;
+                    bestSolution = processed;
                 }
             }
 
-            return solution;
+            return bestSolution;
         }
     }
 }

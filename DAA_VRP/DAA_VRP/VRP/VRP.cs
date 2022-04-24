@@ -10,7 +10,7 @@
         public VRP(Problem problem)
         {
             this.problem = problem;
-        }              
+        }
 
         /// <summary>
         /// Function that solves the VRP with a greedy algorithm.
@@ -23,10 +23,10 @@
 
         }
 
-
-        public GraspSolution SolveGrasp(int rclSize)
+        public GraspSolution SolveGrasp(int rclSize, GraspTypes type)
         {
-            throw new NotImplementedException();
+            GRASP grasp = new GRASP(problem);
+            return grasp.Solve(rclSize, type);
         }
 
     }
