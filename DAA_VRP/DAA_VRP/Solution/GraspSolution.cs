@@ -3,6 +3,8 @@
     public class GraspSolution : Solution
     {
         public int rlcSize = -1;
+        
+
         public GraspSolution(string problemId, int numberOfClients, int rlcSize)
         {
             string[] splittedProblemId = problemId.Split('\\');
@@ -10,14 +12,16 @@
             this.rlcSize = rlcSize;
             this.numberOfClients = numberOfClients;
         }
-        public override string GetInfo()
+
+        public override string GetInfoString()
         {
             throw new NotImplementedException();
         }
 
-        public override string GetPaths()
+        public override string GetPathsString()
         {
             throw new NotImplementedException();
         }
+
     }
 }

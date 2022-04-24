@@ -124,8 +124,9 @@
         public GreedySolution SolveGreedy()
         {
             List<List<int>> paths = GreedyWithRCL(1);
-
-            return new GreedySolution(sourceFilename, numberOfClients, totalDistance, -1, paths);
+            GreedySolution solution = new GreedySolution(sourceFilename, numberOfClients, totalDistance, -1);
+            solution.SetPaths(paths);
+            return solution;
         }
 
         /// <summary>
@@ -138,21 +139,17 @@
             List<List<int>> paths = GreedyWithRCL(rclSize);
 
             GraspSolution solution = new GraspSolution(sourceFilename, numberOfClients, rclSize);
-            solution.paths = paths;
+            solution.SetPaths(paths);
             solution.totalDistance = totalDistance;
             return solution;
 
         }
 
-        private GraspSolution GraspReinsertion(GraspSolution solution)
+        public GraspSolution GraspReinsertion(GraspSolution solution)
         {
-            List<List<int>> paths = solution.paths;
+            List<int> paths = solution.paths;
             int bestDistance = solution.totalDistance;
 
-           while (true)
-            {
-                
-            }
 
             return solution;
         }

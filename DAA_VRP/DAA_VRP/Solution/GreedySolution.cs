@@ -2,34 +2,38 @@
 {
     public class GreedySolution : Solution
     {
-        public GreedySolution(string problemId, int numberOfClients, int totalDistance, long elapsedMilliseconds, List<List<int>> paths)
+        public GreedySolution(string problemId, int numberOfClients, int totalDistance, long elapsedMilliseconds)
         {
             string[] splittedProblemId = problemId.Split('\\');
             this.problemId = splittedProblemId[splittedProblemId.Length - 1];
             this.numberOfClients = numberOfClients;
             this.totalDistance = totalDistance;
             this.elapsedMilliseconds = elapsedMilliseconds;
-            this.paths = paths;
         }
 
-        public override string GetInfo()
+        public override string GetInfoString()
         {
             return String.Format("{0,4} {1,4} {2,4} {3,4}", problemId, numberOfClients, totalDistance, elapsedMilliseconds);
         }
 
-        public override string GetPaths()
+        public override string GetPathsString()
         {
-            string paths = "";
-            foreach (List<int> path in this.paths)
+            string output = "{ 0, ";
+
+            for (int i = 1; i < this.paths.Count - 1; i++)
             {
-                paths += "{" + path[0];
-                for (int i = 1; i < path.Count; i++)
+                if (paths[i] == 0)
                 {
-                    paths += "," + path[i];
+                    output += "0 }\n{ 0, ";
                 }
-                paths += "}\n";
+                else
+                {
+                    output += paths[i]+ ", ";
+                }
             }
-            return paths;
+            output += "0 }\n";
+            return output;
         }
+
     }
 }

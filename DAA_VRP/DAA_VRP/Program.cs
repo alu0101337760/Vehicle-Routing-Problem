@@ -35,6 +35,12 @@
             }
 
             PrintGreedySolutions(greedySolutions);
+
+            foreach (GreedySolution solution in greedySolutions)
+            {
+                Console.WriteLine(solution.GetPathsString());
+            }
+            
         }
     }
 }
