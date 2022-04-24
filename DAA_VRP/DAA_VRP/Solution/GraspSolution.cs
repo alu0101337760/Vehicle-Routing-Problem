@@ -18,10 +18,5 @@
             throw new NotImplementedException();
         }
 
-        public override string GetPathsString()
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }

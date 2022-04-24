@@ -106,9 +106,9 @@
             return paths;
         }
 
-        public GreedySolution Solve()
+        public GreedySolution Solve(int rclSize = 1)
         {
-            List<List<int>> paths = GreedyWithRCL(1);
+            List<List<int>> paths = GreedyWithRCL(rclSize);
             GreedySolution solution = new GreedySolution(sourceFilename, numberOfNodes, totalDistance, -1);
             solution.SetPaths(paths);
             return solution;

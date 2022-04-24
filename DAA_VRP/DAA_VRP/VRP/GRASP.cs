@@ -14,47 +14,51 @@ namespace DAA_VRP
     public class GRASP
     {
         Problem problem;
-        int numberOfClients = -1;
+        int numberOfNodes = -1;
         int totalDistance = -1;
+        int numberOfPaths = -1;
         List<List<int>> distanceMatrix = new List<List<int>>();
 
         public GRASP(Problem problem)
         {
-            this.numberOfClients = problem.numberOfClients;
+            this.numberOfNodes = problem.numberOfClients;
             this.distanceMatrix = problem.distanceMatrix;
             this.problem = problem;
+            this.numberOfPaths = problem.numberOfVehicles;
         }
 
         private GraspSolution ReinsertPath(GraspSolution solution, int index)
         {
             List<int> path = solution.paths[index];
-            int nodeToInsert = -1;
-            int positionToInsert = -1;
+            int nodeToInsert = 0;
+            int positionToInsert = 0;
             int minDistance = solution.totalDistance;
 
-            for (int i = 1; i < path.Count - 1; i++)
+            for (int currentIndex = 1; currentIndex < path.Count - 1; currentIndex++)
             {
-                int currentNode = path[i];
-                int currentDistance = solution.totalDistance -
-                    distanceMatrix[currentNode][currentNode+1] -
-                    distanceMatrix[currentNode-1][currentNode];
+                int distanceAfterRemoving = solution.totalDistance -
+                    distanceMatrix[path[currentIndex]][path[currentIndex + 1]] -
+                    distanceMatrix[path[currentIndex - 1]][path[currentIndex]] +
+                    distanceMatrix[path[currentIndex - 1]][path[currentIndex + 1]];
 
-                for (int candidate = currentNode+1; candidate < problem.; candidate++)
+                for (int candidate = currentIndex + 1; candidate < path.Count - 1; candidate++)
                 {
                     int nextCandidate = candidate + 1;
-                    int candidateDistance = currentDistance +
-                        distanceMatrix[candidate][currentNode] +
-                        distanceMatrix[currentNode][nextCandidate];
+                    int candidateDistance = distanceAfterRemoving +
+                        distanceMatrix[candidate][currentIndex] +
+                        distanceMatrix[currentIndex][nextCandidate] -
+                        distanceMatrix[candidate][nextCandidate];
+
 
                     if (candidateDistance < minDistance)
                     {
                         minDistance = candidateDistance;
-                        nodeToInsert = currentNode;
+                        nodeToInsert = currentIndex;
                         positionToInsert = candidate;
                     }
                 }
             }
-            
+
             path.Remove(nodeToInsert);
             path.Insert(positionToInsert, nodeToInsert);
             solution.totalDistance = minDistance;
@@ -64,20 +68,24 @@ namespace DAA_VRP
         {
             int MAX_ITERATIONS = 1000;
             List<int> pathsToCheck = Enumerable.Range(0, solution.paths.Count).ToList();
-            int i = 0;
-            while (pathsToCheck.Count > 0 || i > MAX_ITERATIONS)
+            int it = 0;
+            while (pathsToCheck.Count > 0 || it > MAX_ITERATIONS)
             {
-                GraspSolution currentSolution = ReinsertPath(solution, pathsToCheck[i]);
-                if (currentSolution.totalDistance == solution.totalDistance)
+                for (int i = 0; i < pathsToCheck.Count; i++)
                 {
-                    pathsToCheck.RemoveAt(i);
+                    GraspSolution currentSolution = ReinsertPath(solution, pathsToCheck[i]);
+                    if (currentSolution.totalDistance == solution.totalDistance)
+                    {
+                        pathsToCheck.RemoveAt(i);
+                    }
+                    if (currentSolution.totalDistance < solution.totalDistance)
+                    {
+                        solution = currentSolution;
+                       // Búsqueda ansiosa: pathsToCheck = Enumerable.Range(0, solution.paths.Count).ToList();
+                    }
                 }
-                if (currentSolution.totalDistance < solution.totalDistance)
-                {
-                    solution = currentSolution;
-                    pathsToCheck = Enumerable.Range(0, solution.paths.Count).ToList();
-                }
-                i++;
+                
+                it++;
             }
 
             return solution;
@@ -115,17 +123,18 @@ namespace DAA_VRP
         {
             GreedyRCL greedy = new GreedyRCL(problem);
 
-            List<List<int>> paths = greedy.GreedyWithRCL(rclSize);
+            GreedySolution greedySolution = greedy.Solve(rclSize);
 
-            GraspSolution solution = new GraspSolution(problem.sourceFilename, numberOfClients, rclSize);
-            solution.SetPaths(paths);
+            GraspSolution solution = new GraspSolution(problem.sourceFilename, numberOfNodes, rclSize);
+            solution.SetPaths(greedySolution.paths);
             solution.totalDistance = totalDistance;
+            solution.totalDistance = greedySolution.totalDistance;
             return solution;
         }
 
         public GraspSolution Solve(int rclSize, GraspTypes type)
         {
-            GraspSolution bestSolution = new GraspSolution(problem.sourceFilename, numberOfClients, rclSize);
+            GraspSolution bestSolution = new GraspSolution(problem.sourceFilename, numberOfNodes, rclSize);
             bestSolution.totalDistance = int.MaxValue;
             for (int i = 0; i < 5000; i++)
             {

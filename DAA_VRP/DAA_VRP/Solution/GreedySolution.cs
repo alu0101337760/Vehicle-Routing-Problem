@@ -16,11 +16,7 @@
             return String.Format("{0,4} {1,4} {2,4} {3,4}", problemId, numberOfClients, totalDistance, elapsedMilliseconds);
         }
 
-        public override string GetPathsString()
-        {
-            string output = "";
-            return output;
-        }
+     
 
     }
 }

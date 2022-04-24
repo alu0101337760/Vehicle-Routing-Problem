@@ -45,9 +45,17 @@
 
             foreach (GreedySolution solution in greedySolutions)
             {
+
+                Console.WriteLine(solution.totalDistance);
                 Console.WriteLine(solution.GetPathsString());
             }
-            
+
+            foreach (GraspSolution solution in graspSolutions)
+            {
+                Console.WriteLine(solution.totalDistance);
+                Console.WriteLine(solution.GetPathsString());                
+            }
+
         }
     }
 }
