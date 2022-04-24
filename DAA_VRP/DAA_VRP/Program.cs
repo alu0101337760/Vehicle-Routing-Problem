@@ -15,6 +15,8 @@
 
         public static void Main(string[] args)
         {
+            int RCL_SIZE = 5;
+            GraspTypes DEFAULT_TYPE = GraspTypes.GRASP_REINSERTION_INTRA;
             string path;
             if (args.Length > 1)
             {
@@ -26,13 +28,18 @@
             }
 
             List<GreedySolution> greedySolutions = new List<GreedySolution>();
+            List<GraspSolution> graspSolutions = new List<GraspSolution>();
 
             foreach (string filename in Directory.EnumerateFiles(path, "*.txt"))
             {
                 Problem problem = new Problem(filename);
                 VRP vrp = new VRP(problem);
                 greedySolutions.Add(vrp.SolveGreedy());
+                GraspSolution solution = vrp.SolveGrasp(RCL_SIZE, DEFAULT_TYPE);                
+                graspSolutions.Add(solution);
             }
+
+   
 
             PrintGreedySolutions(greedySolutions);
 

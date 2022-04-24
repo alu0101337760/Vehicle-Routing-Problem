@@ -39,7 +39,7 @@ namespace DAA_VRP
                     distanceMatrix[currentNode][currentNode+1] -
                     distanceMatrix[currentNode-1][currentNode];
 
-                for (int candidate = currentNode+1; candidate < numberOfClients; candidate++)
+                for (int candidate = currentNode+1; candidate < problem.; candidate++)
                 {
                     int nextCandidate = candidate + 1;
                     int candidateDistance = currentDistance +
