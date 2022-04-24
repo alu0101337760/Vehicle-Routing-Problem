@@ -186,7 +186,7 @@ namespace DAA_VRP
             //newSolution.paths[index][originIndex] = destinationNode;
             //newSolution.paths[index][destinationIndex] = originNode;
             //return newSolution;
-
+            return solution;
         }
 
         private GraspSolution GraspSingleRouteSwap(GraspSolution solution)
