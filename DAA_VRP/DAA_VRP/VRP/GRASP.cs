@@ -27,7 +27,7 @@ namespace DAA_VRP
             this.numberOfPaths = problem.numberOfVehicles;
         }
 
-        private GraspSolution ReinsertPath(GraspSolution solution, int index)
+        private GraspSolution ReinsertIntraPath(GraspSolution solution, int index)
         {
             List<int> path = solution.paths[index];
             int indexToRemove = 0;
@@ -69,6 +69,7 @@ namespace DAA_VRP
             newSolution.paths[index].Insert(positionToInsert, nodeToInsert);
             return newSolution;
         }
+        
         public GraspSolution GraspReinsertionIntra(GraspSolution solution)
         {
             int MAX_ITERATIONS = 5000;
@@ -81,7 +82,7 @@ namespace DAA_VRP
             {
                 for (int i = 0; i < pathsToCheck.Count; i++)
                 {
-                    GraspSolution currentSolution = ReinsertPath(bestSolution, pathsToCheck[i]);
+                    GraspSolution currentSolution = ReinsertIntraPath(bestSolution, pathsToCheck[i]);
                     if (currentSolution.totalDistance == bestSolution.totalDistance)
                     {
                         pathsToCheck.RemoveAt(i);
@@ -98,6 +99,51 @@ namespace DAA_VRP
             return bestSolution;
         }
 
+        public GraspSolution GraspReinsertionInter(GraspSolution solution)
+        {
+            GraspSolution bestSolution = solution;
+
+            for (int currentRoute = 0; currentRoute < solution.paths.Count; currentRoute++)
+            {
+                List<int> originPath = solution.paths[currentRoute];
+                for (int currentIndex = 1; currentIndex < solution.paths[currentRoute].Count - 1; currentIndex++)
+                {
+                    int distanceAfterRemoving = solution.totalDistance -
+                    distanceMatrix[originPath[currentIndex]][originPath[currentIndex + 1]] -
+                    distanceMatrix[originPath[currentIndex - 1]][originPath[currentIndex]] +
+                    distanceMatrix[originPath[currentIndex - 1]][originPath[currentIndex + 1]];
+
+                    for (int destinationRoute = 0; destinationRoute < solution.paths.Count; destinationRoute++)
+                    {
+                        List<int> destinationPath = solution.paths[destinationRoute];
+
+                        for (int candidatePosition = 1; candidatePosition < destinationPath.Count - 1; candidatePosition++)
+                        {
+                            int nextCandidate = candidatePosition + 1;
+                            int candidateDistance = distanceAfterRemoving +
+                                distanceMatrix[destinationPath[candidatePosition]][originPath[currentIndex]] +
+                                distanceMatrix[originPath[currentIndex]][destinationPath[nextCandidate]] -
+                                distanceMatrix[destinationPath[candidatePosition]][destinationPath[nextCandidate]];
+
+                            if (candidateDistance < bestSolution.totalDistance)
+                            {
+                                GraspSolution newSolution = new GraspSolution(solution.problemId, numberOfNodes, solution.rclSize);
+                                newSolution.SetPaths(solution.paths);
+                                newSolution.totalDistance = candidateDistance;
+                                newSolution.paths[currentRoute].RemoveAt(currentIndex);
+                                newSolution.paths[destinationRoute].Insert(candidatePosition, originPath[currentIndex]);
+                                bestSolution = newSolution;
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            return bestSolution;
+
+        }
+
         private GraspSolution LocalSearch(GraspSolution solution, GraspTypes type = GraspTypes.GRASP_SINGLE_ROUTE_SWAP)
         {
             switch (type)
@@ -105,17 +151,18 @@ namespace DAA_VRP
                 case GraspTypes.GRASP_2_OPT:
                     break;
 
+                case GraspTypes.GRASP_SINGLE_ROUTE_SWAP:
+                    break;
+                    
                 case GraspTypes.GRASP_MULTI_ROUTE_SWAP:
                     break;
 
                 case GraspTypes.GRASP_REINSERTION_INTER:
-                    break;
+                    return GraspReinsertionInter(solution);
 
                 case GraspTypes.GRASP_REINSERTION_INTRA:
                     return GraspReinsertionIntra(solution);
 
-                case GraspTypes.GRASP_SINGLE_ROUTE_SWAP:
-                    break;
 
             }
             return solution;
