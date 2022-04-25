@@ -32,6 +32,15 @@
             Console.WriteLine("\n");
         }
 
+        public static void PrintPaths(List<Solution> solutions)
+        {
+            foreach (Solution solution in solutions)
+            {
+                Console.WriteLine("Total cost: " + solution.totalDistance);
+                Console.WriteLine(solution.GetPathsString());
+            }
+        }
+        
         /// <summary>
         /// Main entry of the program
         /// </summary>
@@ -67,19 +76,7 @@
             }
 
             PrintGreedySolutions(greedySolutions);
-            PrintGraspSolutions(graspSolutions);
-            foreach (GreedySolution solution in greedySolutions)
-            {
-                Console.WriteLine(solution.totalDistance);
-                Console.WriteLine(solution.GetPathsString());
-            }
-
-            foreach (GraspSolution solution in graspSolutions)
-            {
-                Console.WriteLine(solution.totalDistance);
-                Console.WriteLine(solution.GetPathsString());
-            }
-
+            PrintGraspSolutions(graspSolutions);         
         }
     }
 }
