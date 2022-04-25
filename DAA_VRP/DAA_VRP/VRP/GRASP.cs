@@ -231,16 +231,28 @@ namespace DAA_VRP
                         distanceMatrix[path[currentIndex]][path[currentIndex + 1]] -
                         distanceMatrix[path[currentIndex - 1]][path[currentIndex]];
 
-                    for (int destinationRoute = 0; destinationRoute < solution.paths.Count; destinationRoute++)
+                    for (int destinationRoute = currentRoute; destinationRoute < solution.paths.Count; destinationRoute++)
                     {
                         List<int> destinationPath = solution.paths[destinationRoute];
-                        for (int candidatePosition = 1; candidatePosition < destinationPath.Count - 1; candidatePosition++)
+                        int initializeValue = 1;
+                        
+                        if (destinationRoute == currentRoute)
                         {
-                            int nextCandidate = candidatePosition + 1;
-                            int candidateDistance = distanceAfterRemoving +
-                                distanceMatrix[destinationPath[candidatePosition]][path[currentIndex]] +
-                                distanceMatrix[path[currentIndex]][destinationPath[nextCandidate]] -
-                                distanceMatrix[destinationPath[candidatePosition]][destinationPath[nextCandidate]];
+                            initializeValue = currentIndex + 2;
+                        }
+
+                        for (int candidatePosition = initializeValue; candidatePosition < destinationPath.Count - 1; candidatePosition++)
+                        {            
+                            int candidateDistance = distanceAfterRemoving -
+                                distanceMatrix[destinationPath[candidatePosition - 1]][destinationPath[candidatePosition]]-
+                                distanceMatrix[destinationPath[candidatePosition]][destinationPath[candidatePosition + 1]] +
+
+                                distanceMatrix[path[currentIndex - 1]][destinationPath[candidatePosition]] +
+                                distanceMatrix[destinationPath[candidatePosition]][path[currentIndex + 1]] +
+
+                                 distanceMatrix[destinationPath[candidatePosition-1]][path[currentIndex]] +
+                                 distanceMatrix[path[currentIndex]][destinationPath[candidatePosition + 1]];
+
 
                             if (candidateDistance < bestSolution.totalDistance)
                             {
