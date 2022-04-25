@@ -2,32 +2,46 @@
 using System.Diagnostics;
 namespace DAA_VRP
 {
+    /// <summary>
+    /// GraspTypes represent different local searches of the grasp algorithm.
+    /// </summary>
     public enum GraspTypes
     {
-        GRASP_REINSERTION_INTRA,
-        GRASP_REINSERTION_INTER,
+        GRASP_MULTI_ROUTE_INSERTION,
+        GRASP_SINGLE_ROUTE_INSERTION,
         GRASP_SINGLE_ROUTE_SWAP,
         GRASP_MULTI_ROUTE_SWAP,
         GRASP_2_OPT
     };
 
+    /// <summary>
+    /// GRASP class implements the GRASP algorithm.
+    /// </summary>
     public class GRASP
     {
         Problem problem;
         int numberOfNodes = -1;
         int totalDistance = -1;
-        int numberOfPaths = -1;
         List<List<int>> distanceMatrix = new List<List<int>>();
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="problem">problem to solve with the current instance</param>
         public GRASP(Problem problem)
         {
             this.numberOfNodes = problem.numberOfClients;
             this.distanceMatrix = problem.distanceMatrix;
             this.problem = problem;
-            this.numberOfPaths = problem.numberOfVehicles;
         }
 
-        private GraspSolution ReinsertIntraPath(GraspSolution solution, int index)
+        /// <summary>
+        /// Helper function for the single path insertion local search
+        /// </summary>
+        /// <param name="solution">the current solution</param>
+        /// <param name="index">the index of the path to insert in</param>
+        /// <returns></returns>
+        private GraspSolution InsertSinglePath(GraspSolution solution, int index)
         {
             List<int> path = solution.paths[index];
             int indexToRemove = 0;
@@ -73,7 +87,7 @@ namespace DAA_VRP
             return newSolution;
         }
 
-        private GraspSolution GraspReinsertionIntra(GraspSolution solution)
+        private GraspSolution GaspSingleRouteInsertion(GraspSolution solution)
         {
             int MAX_ITERATIONS = 2000;
             List<int> pathsToCheck = Enumerable.Range(0, solution.paths.Count).ToList();
@@ -85,7 +99,7 @@ namespace DAA_VRP
             {
                 for (int i = 0; i < pathsToCheck.Count; i++)
                 {
-                    GraspSolution currentSolution = ReinsertIntraPath(bestSolution, pathsToCheck[i]);
+                    GraspSolution currentSolution = InsertSinglePath(bestSolution, pathsToCheck[i]);
                     if (currentSolution.totalDistance == bestSolution.totalDistance)
                     {
                         pathsToCheck.RemoveAt(i);
@@ -102,7 +116,7 @@ namespace DAA_VRP
             return bestSolution;
         }
 
-        private GraspSolution GraspReinsertionInter(GraspSolution solution)
+        private GraspSolution GraspMultiRouteInsertion(GraspSolution solution)
         {
             GraspSolution bestSolution = solution;
 
@@ -147,7 +161,7 @@ namespace DAA_VRP
 
         }
 
-        private GraspSolution SingleRouteSwap(GraspSolution solution, int index)
+        private GraspSolution SwapSinglePath(GraspSolution solution, int index)
         {
             List<int> path = solution.paths[index];
             int originIndex = 0;
@@ -203,7 +217,7 @@ namespace DAA_VRP
             {
                 for (int i = 0; i < pathsToCheck.Count; i++)
                 {
-                    GraspSolution currentSolution = SingleRouteSwap(bestSolution, pathsToCheck[i]);
+                    GraspSolution currentSolution = SwapSinglePath(bestSolution, pathsToCheck[i]);
                     if (currentSolution.totalDistance == bestSolution.totalDistance)
                     {
                         pathsToCheck.RemoveAt(i);
@@ -271,6 +285,12 @@ namespace DAA_VRP
             return bestSolution;
         }
 
+        /// <summary>
+        /// Local search implements different local search algorithms for the problem.
+        /// </summary>
+        /// <param name="solution">Initial solution</param>
+        /// <param name="type">The type of local search to use, its default to GRASP_SINGLE_ROUTE_SWAP</param>
+        /// <returns></returns>
         private GraspSolution LocalSearch(GraspSolution solution, GraspTypes type = GraspTypes.GRASP_SINGLE_ROUTE_SWAP)
         {
             switch (type)
@@ -284,13 +304,11 @@ namespace DAA_VRP
                 case GraspTypes.GRASP_MULTI_ROUTE_SWAP:
                     return GraspMultiRouteSwap(solution);
 
-                case GraspTypes.GRASP_REINSERTION_INTER:
-                    return GraspReinsertionInter(solution);
+                case GraspTypes.GRASP_SINGLE_ROUTE_INSERTION:
+                    return GraspMultiRouteInsertion(solution);
 
-                case GraspTypes.GRASP_REINSERTION_INTRA:
-                    return GraspReinsertionIntra(solution);
-
-
+                case GraspTypes.GRASP_MULTI_ROUTE_INSERTION:
+                    return GaspSingleRouteInsertion(solution);
             }
             return solution;
         }
@@ -313,6 +331,12 @@ namespace DAA_VRP
             return solution;
         }
 
+        /// <summary>
+        /// Solves the problem with the GRASP algorithm
+        /// </summary>
+        /// <param name="rclSize">specifies the size of the rcl for the constructive part of the GRASP</param>
+        /// <param name="type">A GraspType value for selecting which GRASP local search to use</param>
+        /// <returns></returns>
         public GraspSolution Solve(int rclSize, GraspTypes type)
         {
             Stopwatch sw = new Stopwatch();
