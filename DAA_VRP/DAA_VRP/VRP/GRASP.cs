@@ -47,30 +47,39 @@ namespace DAA_VRP
             int positionToInsert = 0;
             int minDistance = solution.totalDistance;
 
-            for (int currentIndex = 1; currentIndex < path.Count - 1; currentIndex++)
+            for (int originIndex = 1; originIndex < path.Count - 1; originIndex++)
             {
                 int distanceAfterRemoving = solution.totalDistance -
-                    distanceMatrix[path[currentIndex]][path[currentIndex + 1]] -
-                    distanceMatrix[path[currentIndex - 1]][path[currentIndex]] +
-                    distanceMatrix[path[currentIndex - 1]][path[currentIndex + 1]];
+                    distanceMatrix[path[originIndex]][path[originIndex + 1]] -
+                    distanceMatrix[path[originIndex - 1]][path[originIndex]] +
+                    distanceMatrix[path[originIndex - 1]][path[originIndex + 1]];
 
-                for (int candidatePosition = currentIndex + 1; candidatePosition < path.Count - 1; candidatePosition++)
+                for (int destinationIndex = 1; destinationIndex < path.Count - 1; destinationIndex++)
                 {
-                    if (candidatePosition == currentIndex || candidatePosition + 1 == currentIndex) { continue; }
+                    if (destinationIndex == originIndex || destinationIndex + 1 == originIndex) { continue; }
 
+                    int candidateDistance = int.MaxValue;
 
-                    int nextCandidate = candidatePosition + 1;
-                    int candidateDistance = distanceAfterRemoving +
-                        distanceMatrix[path[candidatePosition]][path[currentIndex]] +
-                        distanceMatrix[path[currentIndex]][path[nextCandidate]] -
-                        distanceMatrix[path[candidatePosition]][path[nextCandidate]];
-
+                    if (destinationIndex > originIndex)
+                    {
+                        candidateDistance = distanceAfterRemoving +
+                            distanceMatrix[path[destinationIndex]][path[originIndex]] +
+                            distanceMatrix[path[originIndex]][path[destinationIndex + 1]] -
+                            distanceMatrix[path[destinationIndex]][path[destinationIndex + 1]];
+                    }
+                    else
+                    {
+                        candidateDistance = distanceAfterRemoving +
+                            distanceMatrix[path[originIndex]][path[destinationIndex]] +
+                            distanceMatrix[path[destinationIndex - 1]][path[originIndex]] -
+                            distanceMatrix[path[destinationIndex - 1]][path[destinationIndex]];
+                    }
 
                     if (candidateDistance < minDistance)
                     {
                         minDistance = candidateDistance;
-                        indexToRemove = currentIndex;
-                        positionToInsert = candidatePosition;
+                        indexToRemove = originIndex;
+                        positionToInsert = destinationIndex;
                     }
                 }
             }
@@ -127,49 +136,76 @@ namespace DAA_VRP
         {
             GraspSolution bestSolution = solution;
 
-            for (int currentRoute = 0; currentRoute < solution.paths.Count; currentRoute++)
+            int pathToRemove = -1;
+            int indexToRemove = -1;
+            int pathToInsert = -1;
+            int positionToInsert = -1;
+            int nodeToInsert = -1;
+            int minDistance = solution.totalDistance;
+
+            bool foundSolution = true;
+            while (foundSolution)
             {
-                List<int> originPath = solution.paths[currentRoute];
-                for (int currentIndex = 1; currentIndex < solution.paths[currentRoute].Count - 1; currentIndex++)
+                foundSolution = false;
+                for (int currentRoute = 0; currentRoute < bestSolution.paths.Count; currentRoute++)
                 {
-                    int distanceAfterRemoving = solution.totalDistance -
-                    distanceMatrix[originPath[currentIndex]][originPath[currentIndex + 1]] -
-                    distanceMatrix[originPath[currentIndex - 1]][originPath[currentIndex]] +
-                    distanceMatrix[originPath[currentIndex - 1]][originPath[currentIndex + 1]];
-
-                    for (int destinationRoute = 0; destinationRoute < solution.paths.Count; destinationRoute++)
+                    List<int> originPath = bestSolution.paths[currentRoute];
+                    for (int originIndex = 1; originIndex < originPath.Count - 1; originIndex++)
                     {
-                        List<int> destinationPath = solution.paths[destinationRoute];
-                        if (destinationPath.Count + 1 > (int)(numberOfNodes / solution.paths.Count) + (numberOfNodes * 0.1))
-                        { continue; }
-                        for (int candidatePosition = 1; candidatePosition < destinationPath.Count - 1; candidatePosition++)
+                        int distanceAfterRemoving = bestSolution.totalDistance -
+                        distanceMatrix[originPath[originIndex]][originPath[originIndex + 1]] -
+                        distanceMatrix[originPath[originIndex - 1]][originPath[originIndex]] +
+                        distanceMatrix[originPath[originIndex - 1]][originPath[originIndex + 1]];
+
+                        for (int destinationRoute = 0; destinationRoute < bestSolution.paths.Count; destinationRoute++)
                         {
-                            if (destinationPath == originPath && (candidatePosition == currentIndex || candidatePosition + 1 == currentIndex))
+                            List<int> destinationPath = bestSolution.paths[destinationRoute];
+                            if (destinationPath.Count + 1 > (numberOfNodes / bestSolution.paths.Count) + (numberOfNodes * 0.1))
+                            { continue; }
+                            for (int candidateIndex = 1; candidateIndex < destinationPath.Count - 1; candidateIndex++)
                             {
-                                continue;
-                            }
+                                if (destinationPath == originPath && (candidateIndex == originIndex || candidateIndex + 1 == originIndex))
+                                {
+                                    continue;
+                                }
 
-                            int candidateDistance = distanceAfterRemoving +
-                                distanceMatrix[destinationPath[candidatePosition - 1]][originPath[currentIndex]] +
-                                distanceMatrix[originPath[currentIndex]][destinationPath[candidatePosition]] -
-                                distanceMatrix[destinationPath[candidatePosition]][destinationPath[candidatePosition + 1]];
+                                int candidateDistance = int.MaxValue;
 
-                            if (candidateDistance < bestSolution.totalDistance)
-                            {
-                                GraspSolution newSolution = new GraspSolution(solution.problemId, numberOfNodes, solution.rclSize);
-                                newSolution.SetPaths(solution.paths);
-                                newSolution.totalDistance = candidateDistance;
-                                newSolution.paths[currentRoute].RemoveAt(currentIndex);
-                                newSolution.paths[destinationRoute].Insert(candidatePosition, originPath[currentIndex]);
-                                bestSolution = newSolution;
+                                if (destinationPath == originPath && candidateIndex > originIndex)
+                                {
+                                    candidateDistance = distanceAfterRemoving +
+                                        distanceMatrix[destinationPath[candidateIndex - 1]][originPath[originIndex]] +
+                                        distanceMatrix[originPath[originIndex]][destinationPath[candidateIndex]] -
+                                        distanceMatrix[destinationPath[candidateIndex]][destinationPath[candidateIndex + 1]];
+                                }
+                                else
+                                {
+                                    candidateDistance = distanceAfterRemoving +
+                                    distanceMatrix[originPath[originIndex]][destinationPath[candidateIndex]] +
+                                    distanceMatrix[destinationPath[candidateIndex - 1]][originPath[originIndex]] -
+                                    distanceMatrix[destinationPath[candidateIndex - 1]][destinationPath[candidateIndex]];
+                                }
+
+                                if (candidateDistance < minDistance)
+                                {
+                                    indexToRemove = originIndex;
+                                    positionToInsert = candidateIndex;
+                                    nodeToInsert = originPath[originIndex];
+                                    minDistance = candidateDistance;
+                                    pathToRemove = currentRoute;
+                                    pathToInsert = destinationRoute;
+                                    foundSolution = true;
+
+                                }
                             }
                         }
-
                     }
-
                 }
-            }
 
+                bestSolution.paths[pathToRemove].RemoveAt(indexToRemove);
+                bestSolution.paths[pathToInsert].Insert(positionToInsert, nodeToInsert);
+                bestSolution.totalDistance = minDistance;
+            }
             return bestSolution;
 
         }
@@ -261,51 +297,69 @@ namespace DAA_VRP
         /// <param name="solution">The current solution to explore</param>
         private GraspSolution GraspMultiRouteSwap(GraspSolution solution)
         {
+
             GraspSolution bestSolution = solution;
-            for (int currentRoute = 0; currentRoute < solution.paths.Count; currentRoute++)
+
+            int pathA = 0;
+            int pathB = 0;
+            int nodeA = 0;
+            int nodeB = 0;
+            int minDistance = solution.totalDistance;
+
+
+            bool foundSolution = false;
+            while (foundSolution)
             {
-                List<int> path = solution.paths[currentRoute];
-                for (int currentIndex = 1; currentIndex < path.Count - 1; currentIndex++)
+                foundSolution = false;
+                for (int currentRoute = 0; currentRoute < bestSolution.paths.Count; currentRoute++)
                 {
-                    int distanceAfterRemoving = solution.totalDistance -
-                        distanceMatrix[path[currentIndex]][path[currentIndex + 1]] -
-                        distanceMatrix[path[currentIndex - 1]][path[currentIndex]];
-
-                    for (int destinationRoute = currentRoute; destinationRoute < solution.paths.Count; destinationRoute++)
+                    List<int> currentPath = bestSolution.paths[currentRoute];
+                    for (int currentIndex = 1; currentIndex < currentPath.Count - 1; currentIndex++)
                     {
-                        List<int> destinationPath = solution.paths[destinationRoute];
-                        int initializeValue = 1;
+                        int distanceAfterRemoving = bestSolution.totalDistance -
+                            distanceMatrix[currentPath[currentIndex]][currentPath[currentIndex + 1]] -
+                            distanceMatrix[currentPath[currentIndex - 1]][currentPath[currentIndex]];
 
-                        if (destinationRoute == currentRoute)
+                        for (int destinationRoute = currentRoute; destinationRoute < bestSolution.paths.Count; destinationRoute++)
                         {
-                            initializeValue = currentIndex + 2;
-                        }
+                            List<int> destinationPath = bestSolution.paths[destinationRoute];
+                            int initializeValue = 1;
 
-                        for (int candidatePosition = initializeValue; candidatePosition < destinationPath.Count - 1; candidatePosition++)
-                        {
-                            int candidateDistance = distanceAfterRemoving -
-                                distanceMatrix[destinationPath[candidatePosition - 1]][destinationPath[candidatePosition]] -
-                                distanceMatrix[destinationPath[candidatePosition]][destinationPath[candidatePosition + 1]] +
-
-                                distanceMatrix[path[currentIndex - 1]][destinationPath[candidatePosition]] +
-                                distanceMatrix[destinationPath[candidatePosition]][path[currentIndex + 1]] +
-
-                                 distanceMatrix[destinationPath[candidatePosition - 1]][path[currentIndex]] +
-                                 distanceMatrix[path[currentIndex]][destinationPath[candidatePosition + 1]];
-
-
-                            if (candidateDistance < bestSolution.totalDistance)
+                            if (destinationRoute == currentRoute)
                             {
-                                GraspSolution newSolution = new GraspSolution(solution.problemId, numberOfNodes, solution.rclSize);
-                                newSolution.SetPaths(solution.paths);
-                                newSolution.totalDistance = candidateDistance;
-                                newSolution.paths[currentRoute][currentIndex] = destinationPath[candidatePosition];
-                                newSolution.paths[destinationRoute][candidatePosition] = path[currentIndex];
-                                bestSolution = newSolution;
+                                initializeValue = currentIndex + 2;
+                            }
+
+                            for (int candidatePosition = initializeValue; candidatePosition < destinationPath.Count - 1; candidatePosition++)
+                            {
+                                int candidateDistance = distanceAfterRemoving -
+                                    distanceMatrix[destinationPath[candidatePosition - 1]][destinationPath[candidatePosition]] -
+                                    distanceMatrix[destinationPath[candidatePosition]][destinationPath[candidatePosition + 1]] +
+
+                                    distanceMatrix[currentPath[currentIndex - 1]][destinationPath[candidatePosition]] +
+                                    distanceMatrix[destinationPath[candidatePosition]][currentPath[currentIndex + 1]] +
+
+                                     distanceMatrix[destinationPath[candidatePosition - 1]][currentPath[currentIndex]] +
+                                     distanceMatrix[currentPath[currentIndex]][destinationPath[candidatePosition + 1]];
+
+
+                                if (candidateDistance < bestSolution.totalDistance)
+                                {
+                                    pathA = currentRoute;
+                                    pathB = destinationRoute;
+                                    nodeA = currentIndex;
+                                    nodeB = candidatePosition;
+                                    minDistance = candidateDistance;
+                                    foundSolution = true;
+                                }
                             }
                         }
                     }
                 }
+                bestSolution.totalDistance = minDistance;
+                int temp = bestSolution.paths[pathA][nodeA];
+                bestSolution.paths[pathA][nodeA] = bestSolution.paths[pathB][nodeB];
+                bestSolution.paths[pathB][nodeB] = temp;
             }
 
             return bestSolution;
