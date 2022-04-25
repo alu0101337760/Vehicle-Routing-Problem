@@ -163,13 +163,13 @@ namespace DAA_VRP
                 for (int candidateIndex = currentIndex + 2; candidateIndex < path.Count - 1; candidateIndex++)
                 {
                     int candidateDistance = distanceAfterRemoving -
-                        distanceMatrix[path[candidateIndex -1]][path[candidateIndex]] -
+                        distanceMatrix[path[candidateIndex - 1]][path[candidateIndex]] -
                         distanceMatrix[path[candidateIndex]][path[candidateIndex + 1]] +
 
                         distanceMatrix[path[currentIndex - 1]][path[candidateIndex]] +
                         distanceMatrix[path[candidateIndex]][path[currentIndex + 1]] +
 
-                        distanceMatrix[path[candidateIndex-1]][path[currentIndex]] +
+                        distanceMatrix[path[candidateIndex - 1]][path[currentIndex]] +
                         distanceMatrix[path[currentIndex]][path[candidateIndex + 1]];
 
                     if (candidateDistance < minDistance)
