@@ -1,5 +1,5 @@
-﻿
-using System.Diagnostics;
+﻿using System.Diagnostics;
+
 namespace DAA_VRP
 {
     /// <summary>
@@ -40,7 +40,6 @@ namespace DAA_VRP
         /// </summary>
         /// <param name="solution">the current solution</param>
         /// <param name="index">the index of the path to insert in</param>
-        /// <returns></returns>
         private GraspSolution InsertSinglePath(GraspSolution solution, int index)
         {
             List<int> path = solution.paths[index];
@@ -87,6 +86,10 @@ namespace DAA_VRP
             return newSolution;
         }
 
+        /// <summary>
+        /// Implements the single route insertion local search
+        /// </summary>
+        /// <param name="solution">The current solution to explore</param>
         private GraspSolution GaspSingleRouteInsertion(GraspSolution solution)
         {
             int MAX_ITERATIONS = 2000;
@@ -116,6 +119,10 @@ namespace DAA_VRP
             return bestSolution;
         }
 
+        /// <summary>
+        /// Implements the multi route insertion local search
+        /// </summary>
+        /// <param name="solution">The current solution to explore</param>
         private GraspSolution GraspMultiRouteInsertion(GraspSolution solution)
         {
             GraspSolution bestSolution = solution;
@@ -161,6 +168,12 @@ namespace DAA_VRP
 
         }
 
+
+        /// <summary>
+        /// Helper function for the single path swap local search
+        /// </summary>
+        /// <param name="solution">the current solution</param>
+        /// <param name="index">the index of the path to insert in</param>
         private GraspSolution SwapSinglePath(GraspSolution solution, int index)
         {
             List<int> path = solution.paths[index];
@@ -205,6 +218,10 @@ namespace DAA_VRP
             return newSolution;
         }
 
+        /// <summary>
+        /// Implements the single route swap local search
+        /// </summary>
+        /// <param name="solution">The current solution to explore</param>
         private GraspSolution GraspSingleRouteSwap(GraspSolution solution)
         {
             int MAX_ITERATIONS = 2000;
@@ -233,6 +250,10 @@ namespace DAA_VRP
             return bestSolution;
         }
 
+        /// <summary>
+        /// Implements the multi route swap local search
+        /// </summary>
+        /// <param name="solution">The current solution to explore</param>
         private GraspSolution GraspMultiRouteSwap(GraspSolution solution)
         {
             GraspSolution bestSolution = solution;
@@ -290,7 +311,6 @@ namespace DAA_VRP
         /// </summary>
         /// <param name="solution">Initial solution</param>
         /// <param name="type">The type of local search to use, its default to GRASP_SINGLE_ROUTE_SWAP</param>
-        /// <returns></returns>
         private GraspSolution LocalSearch(GraspSolution solution, GraspTypes type = GraspTypes.GRASP_SINGLE_ROUTE_SWAP)
         {
             switch (type)
@@ -336,7 +356,6 @@ namespace DAA_VRP
         /// </summary>
         /// <param name="rclSize">specifies the size of the rcl for the constructive part of the GRASP</param>
         /// <param name="type">A GraspType value for selecting which GRASP local search to use</param>
-        /// <returns></returns>
         public GraspSolution Solve(int rclSize, GraspTypes type)
         {
             Stopwatch sw = new Stopwatch();
@@ -355,10 +374,7 @@ namespace DAA_VRP
             }
             sw.Stop();
             bestSolution.elapsedMilliseconds = sw.ElapsedMilliseconds;
-
             return bestSolution;
         }
-
-
     }
 }
