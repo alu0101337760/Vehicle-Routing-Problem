@@ -1,5 +1,5 @@
 ﻿
-
+using System.Diagnostics;
 namespace DAA_VRP
 {
     public enum GraspTypes
@@ -43,6 +43,9 @@ namespace DAA_VRP
 
                 for (int candidatePosition = currentIndex + 1; candidatePosition < path.Count - 1; candidatePosition++)
                 {
+                    if (candidatePosition == currentIndex || candidatePosition + 1 == currentIndex) { continue; }
+
+
                     int nextCandidate = candidatePosition + 1;
                     int candidateDistance = distanceAfterRemoving +
                         distanceMatrix[path[candidatePosition]][path[currentIndex]] +
@@ -217,7 +220,8 @@ namespace DAA_VRP
             return bestSolution;
         }
 
-        private GraspSolution GraspMultiRouteSwap(GraspSolution solution) {
+        private GraspSolution GraspMultiRouteSwap(GraspSolution solution)
+        {
             GraspSolution bestSolution = solution;
             for (int currentRoute = 0; currentRoute < solution.paths.Count; currentRoute++)
             {
@@ -300,6 +304,8 @@ namespace DAA_VRP
 
         public GraspSolution Solve(int rclSize, GraspTypes type)
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             GraspSolution bestSolution = new GraspSolution(problem.sourceFilename, numberOfNodes, rclSize);
             bestSolution.totalDistance = int.MaxValue;
             for (int i = 0; i < 2000; i++)
@@ -312,8 +318,12 @@ namespace DAA_VRP
                     i = 0;
                 }
             }
+            sw.Stop();
+            bestSolution.elapsedMilliseconds = sw.ElapsedMilliseconds;
 
             return bestSolution;
         }
+
+
     }
 }

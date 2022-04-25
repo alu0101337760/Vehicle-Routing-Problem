@@ -9,14 +9,6 @@
             this.numberOfClients = numberOfClients;
             this.totalDistance = totalDistance;
             this.elapsedMilliseconds = elapsedMilliseconds;
-        }
-
-        public override string GetInfoString()
-        {
-            return String.Format("{0,4} {1,4} {2,4} {3,4}", problemId, numberOfClients, totalDistance, elapsedMilliseconds);
-        }
-
-     
-
+        }        
     }
 }

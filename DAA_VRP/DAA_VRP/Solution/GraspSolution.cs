@@ -10,12 +10,6 @@
             this.problemId = splittedProblemId[splittedProblemId.Length - 1];
             this.rclSize = rclSize;
             this.numberOfClients = numberOfClients;
-        }
-
-        public override string GetInfoString()
-        {
-            throw new NotImplementedException();
-        }
-
+        }   
     }
 }

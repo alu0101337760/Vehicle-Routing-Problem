@@ -1,4 +1,5 @@
-﻿namespace DAA_VRP
+﻿using System.Diagnostics;
+namespace DAA_VRP
 {
     public class GreedyRCL
     {
@@ -108,9 +109,13 @@
 
         public GreedySolution Solve(int rclSize = 1)
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             List<List<int>> paths = GreedyWithRCL(rclSize);
-            GreedySolution solution = new GreedySolution(sourceFilename, numberOfNodes, totalDistance, -1);
+            sw.Stop();
+            GreedySolution solution = new GreedySolution(sourceFilename, numberOfNodes, totalDistance, sw.ElapsedMilliseconds);
             solution.SetPaths(paths);
+            
             return solution;
         }
     }

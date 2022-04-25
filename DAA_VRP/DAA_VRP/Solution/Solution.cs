@@ -8,7 +8,6 @@
         public long elapsedMilliseconds = -1;
         public List<List<int>> paths = new List<List<int>>();
 
-        public abstract string GetInfoString();
         public string GetPathsString()
         {
             string output = "";

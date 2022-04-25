@@ -10,13 +10,24 @@
             {
                 Console.WriteLine(solution.problemId + "\t" + solution.numberOfClients + "\t" + solution.totalDistance + "\t" + solution.elapsedMilliseconds);
             }
+            Console.WriteLine("\n");
         }
-
+        public static void PrintGraspSolutions(List<GraspSolution> greedySolutions)
+        {
+            Console.WriteLine("Greedy Solutions:");
+            Console.WriteLine(String.Format("\tfilename\tnodes\tRCL\tcost\tmilliseconds"));
+            foreach (GraspSolution solution in greedySolutions)
+            {
+                Console.WriteLine(solution.problemId + "\t" + solution.numberOfClients + "\t" + 
+                                  solution.rclSize + "\t" + solution.totalDistance + "\t" + solution.elapsedMilliseconds);
+            }
+            Console.WriteLine("\n");
+        }
 
         public static void Main(string[] args)
         {
             int RCL_SIZE = 2;
-            GraspTypes DEFAULT_TYPE = GraspTypes.GRASP_MULTI_ROUTE_SWAP;
+            GraspTypes DEFAULT_TYPE = GraspTypes.GRASP_REINSERTION_INTRA;
             string path;
             if (args.Length > 1)
             {
@@ -35,15 +46,19 @@
                 Problem problem = new Problem(filename);
                 VRP vrp = new VRP(problem);
                 greedySolutions.Add(vrp.SolveGreedy());
-                GraspSolution solution = vrp.SolveGrasp(RCL_SIZE, DEFAULT_TYPE);                
+
+                GraspSolution solution = vrp.SolveGrasp(RCL_SIZE, DEFAULT_TYPE);
+                Console.WriteLine("expected cost: " + solution.totalDistance);
+                Console.WriteLine("real cost: " + vrp.CalculateDistance(solution.paths));
+
                 graspSolutions.Add(solution);
+
             }
 
             PrintGreedySolutions(greedySolutions);
-
+            PrintGraspSolutions(graspSolutions);
             foreach (GreedySolution solution in greedySolutions)
             {
-
                 Console.WriteLine(solution.totalDistance);
                 Console.WriteLine(solution.GetPathsString());
             }
@@ -51,7 +66,7 @@
             foreach (GraspSolution solution in graspSolutions)
             {
                 Console.WriteLine(solution.totalDistance);
-                Console.WriteLine(solution.GetPathsString());                
+                Console.WriteLine(solution.GetPathsString());
             }
 
         }
