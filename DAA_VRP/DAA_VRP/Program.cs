@@ -38,7 +38,7 @@
         public static void Main(string[] args)
         {
             int RCL_SIZE = 2;
-            GraspTypes DEFAULT_TYPE = GraspTypes.GRASP_MULTI_ROUTE_INSERTION;
+            GraspTypes DEFAULT_TYPE = GraspTypes.GRASP_SINGLE_ROUTE_INSERTION;
             string path;
             if (args.Length > 1)
             {

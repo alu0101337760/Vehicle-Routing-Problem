@@ -112,21 +112,20 @@ namespace DAA_VRP
                 for (int i = 0; i < pathsToCheck.Count; i++)
                 {
                     GraspSolution currentSolution = InsertSinglePath(bestSolution, pathsToCheck[i]);
-                    if (currentSolution.totalDistance == bestSolution.totalDistance)
-                    {
-                        pathsToCheck.RemoveAt(i);
-                    }
+
                     if (currentSolution.totalDistance < bestSolution.totalDistance)
                     {
                         bestSolution = currentSolution;
                         // Búsqueda ansiosa:  pathsToCheck = Enumerable.Range(0, solution.paths.Count).ToList();
                     }
+                    else { pathsToCheck.RemoveAt(i); }
                 }
                 it++;
             }
 
             return bestSolution;
         }
+
 
         /// <summary>
         /// Implements the multi route insertion local search
@@ -136,11 +135,11 @@ namespace DAA_VRP
         {
             GraspSolution bestSolution = solution;
 
-            int pathToRemove = -1;
-            int indexToRemove = -1;
-            int pathToInsert = -1;
-            int positionToInsert = -1;
-            int nodeToInsert = -1;
+            int pathToRemove = 0;
+            int indexToRemove = 0;
+            int pathToInsert = 0;
+            int positionToInsert = 0;
+            int nodeToInsert = 0;
             int minDistance = solution.totalDistance;
 
             bool foundSolution = true;
@@ -159,32 +158,16 @@ namespace DAA_VRP
 
                         for (int destinationRoute = 0; destinationRoute < bestSolution.paths.Count; destinationRoute++)
                         {
-                            List<int> destinationPath = bestSolution.paths[destinationRoute];
-                            if (destinationPath.Count + 1 > (numberOfNodes / bestSolution.paths.Count) + (numberOfNodes * 0.1))
+
+                            if (destinationRoute == currentRoute || bestSolution.paths[destinationRoute].Count + 1 > (numberOfNodes / bestSolution.paths.Count) + (numberOfNodes * 0.1))
                             { continue; }
+                            List<int> destinationPath = bestSolution.paths[destinationRoute];
                             for (int candidateIndex = 1; candidateIndex < destinationPath.Count - 1; candidateIndex++)
                             {
-                                if (destinationPath == originPath && (candidateIndex == originIndex || candidateIndex + 1 == originIndex))
-                                {
-                                    continue;
-                                }
-
-                                int candidateDistance = int.MaxValue;
-
-                                if (destinationPath == originPath && candidateIndex > originIndex)
-                                {
-                                    candidateDistance = distanceAfterRemoving +
-                                        distanceMatrix[destinationPath[candidateIndex - 1]][originPath[originIndex]] +
-                                        distanceMatrix[originPath[originIndex]][destinationPath[candidateIndex]] -
-                                        distanceMatrix[destinationPath[candidateIndex]][destinationPath[candidateIndex + 1]];
-                                }
-                                else
-                                {
-                                    candidateDistance = distanceAfterRemoving +
+                                int candidateDistance = distanceAfterRemoving +
                                     distanceMatrix[originPath[originIndex]][destinationPath[candidateIndex]] +
                                     distanceMatrix[destinationPath[candidateIndex - 1]][originPath[originIndex]] -
                                     distanceMatrix[destinationPath[candidateIndex - 1]][destinationPath[candidateIndex]];
-                                }
 
                                 if (candidateDistance < minDistance)
                                 {
@@ -195,16 +178,17 @@ namespace DAA_VRP
                                     pathToRemove = currentRoute;
                                     pathToInsert = destinationRoute;
                                     foundSolution = true;
-
                                 }
                             }
                         }
                     }
                 }
-
-                bestSolution.paths[pathToRemove].RemoveAt(indexToRemove);
-                bestSolution.paths[pathToInsert].Insert(positionToInsert, nodeToInsert);
-                bestSolution.totalDistance = minDistance;
+                if (foundSolution)
+                {
+                    bestSolution.paths[pathToRemove].RemoveAt(indexToRemove);
+                    bestSolution.paths[pathToInsert].Insert(positionToInsert, nodeToInsert);
+                    bestSolution.totalDistance = minDistance;
+                }
             }
             return bestSolution;
 
@@ -356,10 +340,13 @@ namespace DAA_VRP
                         }
                     }
                 }
-                bestSolution.totalDistance = minDistance;
-                int temp = bestSolution.paths[pathA][nodeA];
-                bestSolution.paths[pathA][nodeA] = bestSolution.paths[pathB][nodeB];
-                bestSolution.paths[pathB][nodeB] = temp;
+                if (foundSolution)
+                {
+                    bestSolution.totalDistance = minDistance;
+                    int temp = bestSolution.paths[pathA][nodeA];
+                    bestSolution.paths[pathA][nodeA] = bestSolution.paths[pathB][nodeB];
+                    bestSolution.paths[pathB][nodeB] = temp;
+                }
             }
 
             return bestSolution;
