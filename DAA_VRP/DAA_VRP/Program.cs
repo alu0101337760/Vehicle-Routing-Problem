@@ -16,17 +16,17 @@
             }
             Console.WriteLine("\n");
         }
-        
+
         /// <summary>
         /// Helper function to print the grasp solutions
         /// </summary>
         public static void PrintGraspSolutions(List<GraspSolution> greedySolutions)
         {
-            Console.WriteLine("Greedy Solutions:");
+            Console.WriteLine("Grasp Solutions:");
             Console.WriteLine(String.Format("\tfilename\tnodes\tRCL\tcost\tmilliseconds"));
             foreach (GraspSolution solution in greedySolutions)
             {
-                Console.WriteLine(solution.problemId + "\t" + solution.numberOfClients + "\t" + 
+                Console.WriteLine(solution.problemId + "\t" + solution.numberOfClients + "\t" +
                                   solution.rclSize + "\t" + solution.totalDistance + "\t" + solution.elapsedMilliseconds);
             }
             Console.WriteLine("\n");
@@ -40,7 +40,7 @@
                 Console.WriteLine(solution.GetPathsString());
             }
         }
-        
+
         /// <summary>
         /// Main entry of the program
         /// </summary>
@@ -59,7 +59,11 @@
             }
 
             List<GreedySolution> greedySolutions = new List<GreedySolution>();
-            List<GraspSolution> graspSolutions = new List<GraspSolution>();
+            List<GraspSolution> multiInsertSolutions = new List<GraspSolution>();
+            List<GraspSolution> singleInsertionSolutions = new List<GraspSolution>();
+            List<GraspSolution> singleSwapSolutions = new List<GraspSolution>();
+            List<GraspSolution> multiSwapSolutions = new List<GraspSolution>();
+
 
             foreach (string filename in Directory.EnumerateFiles(path, "*.txt"))
             {
@@ -67,16 +71,26 @@
                 VRP vrp = new VRP(problem);
                 greedySolutions.Add(vrp.SolveGreedy());
 
-                GraspSolution solution = vrp.SolveGrasp(RCL_SIZE, DEFAULT_TYPE);
-                Console.WriteLine("expected cost: " + solution.totalDistance);
-                Console.WriteLine("real cost: " + vrp.CalculateDistance(solution.paths));
-
-                graspSolutions.Add(solution);
-
+                singleInsertionSolutions.Add(vrp.SolveGrasp(RCL_SIZE, GraspTypes.GRASP_SINGLE_ROUTE_INSERTION));
+                multiInsertSolutions.Add(vrp.SolveGrasp(RCL_SIZE, GraspTypes.GRASP_MULTI_ROUTE_INSERTION));
+                singleSwapSolutions.Add(vrp.SolveGrasp(RCL_SIZE, GraspTypes.GRASP_SINGLE_ROUTE_SWAP));
+                multiSwapSolutions.Add(vrp.SolveGrasp(RCL_SIZE, GraspTypes.GRASP_MULTI_ROUTE_SWAP));
             }
 
             PrintGreedySolutions(greedySolutions);
-            PrintGraspSolutions(graspSolutions);         
+            
+            Console.WriteLine("Multi route Insertion solutions:");
+            PrintGraspSolutions(multiInsertSolutions);
+
+            Console.WriteLine("Single route Insertion solutions:");
+            PrintGraspSolutions(singleInsertionSolutions);
+
+            Console.WriteLine("Single swap Insertion solutions:");
+            PrintGraspSolutions(singleSwapSolutions);
+
+            Console.WriteLine("Multi swap Insertion solutions:");
+            PrintGraspSolutions(multiSwapSolutions);
+
         }
     }
 }
