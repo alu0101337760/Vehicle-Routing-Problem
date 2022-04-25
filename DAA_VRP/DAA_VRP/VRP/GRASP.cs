@@ -101,13 +101,13 @@ namespace DAA_VRP
         /// <param name="solution">The current solution to explore</param>
         private GraspSolution GraspSingleRouteInsertion(GraspSolution solution)
         {
-            int MAX_ITERATIONS = 2000;
+            int MAX_ITERATIONS_WITHOUT_IMPROVEMENT = 100;
             List<int> pathsToCheck = Enumerable.Range(0, solution.paths.Count).ToList();
             int it = 0;
 
             GraspSolution bestSolution = solution;
 
-            while (pathsToCheck.Count > 0 && it < MAX_ITERATIONS)
+            while (pathsToCheck.Count > 0 && it < MAX_ITERATIONS_WITHOUT_IMPROVEMENT)
             {
                 for (int i = 0; i < pathsToCheck.Count; i++)
                 {
@@ -116,9 +116,13 @@ namespace DAA_VRP
                     if (currentSolution.totalDistance < bestSolution.totalDistance)
                     {
                         bestSolution = currentSolution;
+                        it = 0;
                         // Búsqueda ansiosa:  pathsToCheck = Enumerable.Range(0, solution.paths.Count).ToList();
                     }
-                    else { pathsToCheck.RemoveAt(i); }
+                    else
+                    {
+                        pathsToCheck.RemoveAt(i);
+                    }
                 }
                 it++;
             }
@@ -249,25 +253,27 @@ namespace DAA_VRP
         /// <param name="solution">The current solution to explore</param>
         private GraspSolution GraspSingleRouteSwap(GraspSolution solution)
         {
-            int MAX_ITERATIONS = 2000;
+            int MAX_ITERATIONS_WITHOUT_IMPROVEMENT = 100;
             List<int> pathsToCheck = Enumerable.Range(0, solution.paths.Count).ToList();
             int it = 0;
 
             GraspSolution bestSolution = solution;
 
-            while (pathsToCheck.Count > 0 && it < MAX_ITERATIONS)
+            while (pathsToCheck.Count > 0 && it < MAX_ITERATIONS_WITHOUT_IMPROVEMENT)
             {
                 for (int i = 0; i < pathsToCheck.Count; i++)
                 {
                     GraspSolution currentSolution = SwapSinglePath(bestSolution, pathsToCheck[i]);
-                    if (currentSolution.totalDistance == bestSolution.totalDistance)
-                    {
-                        pathsToCheck.RemoveAt(i);
-                    }
+           
                     if (currentSolution.totalDistance < bestSolution.totalDistance)
                     {
                         bestSolution = currentSolution;
+                        it = 0;
                         // Búsqueda ansiosa:  pathsToCheck = Enumerable.Range(0, solution.paths.Count).ToList();
+                    }
+                    else
+                    {
+                        pathsToCheck.RemoveAt(i);
                     }
                 }
                 it++;
