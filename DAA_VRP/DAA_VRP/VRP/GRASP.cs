@@ -149,74 +149,75 @@ namespace DAA_VRP
 
         private GraspSolution SingleRouteSwap(GraspSolution solution, int index)
         {
-            //List<int> path = solution.paths[index];
-            //int originIndex = 0;
-            //int destinationIndex = 0;
-            //int minDistance = solution.totalDistance;
+            List<int> path = solution.paths[index];
+            int originIndex = 0;
+            int destinationIndex = 0;
+            int minDistance = solution.totalDistance;
 
-            //for (int currentIndex = 1; currentIndex < path.Count - 1; currentIndex++)
-            //{
-            //    int distanceAfterRemoving = solution.totalDistance -
-            //        distanceMatrix[path[currentIndex]][path[currentIndex + 1]] -
-            //        distanceMatrix[path[currentIndex - 1]][path[currentIndex]];
+            for (int currentIndex = 1; currentIndex < path.Count - 1; currentIndex++)
+            {
+                int distanceAfterRemoving = solution.totalDistance -
+                    distanceMatrix[path[currentIndex]][path[currentIndex + 1]] -
+                    distanceMatrix[path[currentIndex - 1]][path[currentIndex]];
 
-            //    for (int candidateIndex = currentIndex + 1; candidateIndex < path.Count - 1; candidateIndex++)
-            //    {
+                for (int candidateIndex = currentIndex + 2; candidateIndex < path.Count - 1; candidateIndex++)
+                {
 
-            //        int candidateDistance = distanceAfterRemoving +
-            //            distanceMatrix[path[candidateIndex]][path[candidateIndex + 1]] -
-            //            distanceMatrix[path[candidateIndex - 1]][path[candidateIndex]] +
-            //            distanceMatrix[path[currentIndex - 1]][path[candidateIndex]] +
-            //            distanceMatrix[path[candidateIndex]][path[currentIndex + 1]] +
-            //            distanceMatrix[path[candidateIndex - 1]][path[currentIndex]] +
-            //            distanceMatrix[path[currentIndex]][path[candidateIndex + 1]];
+                    int candidateDistance = distanceAfterRemoving -
+                        distanceMatrix[path[candidateIndex -1]][path[candidateIndex]] -
+                        distanceMatrix[path[candidateIndex]][path[candidateIndex + 1]] +
+
+                        distanceMatrix[path[currentIndex - 1]][path[candidateIndex]] +
+                        distanceMatrix[path[candidateIndex]][path[currentIndex + 1]] +
+
+                        distanceMatrix[path[candidateIndex-1]][path[currentIndex]] +
+                        distanceMatrix[path[currentIndex]][path[candidateIndex + 1]];
 
 
-            //        if (candidateDistance < minDistance)
-            //        {
-            //            minDistance = candidateDistance;
-            //            originIndex = currentIndex;
-            //            destinationIndex = candidateIndex;
-            //        }
-            //    }
-            //}
+                    if (candidateDistance < minDistance)
+                    {
+                        minDistance = candidateDistance;
+                        originIndex = currentIndex;
+                        destinationIndex = candidateIndex;
+                    }
+                }
+            }
 
-            //int originNode = path[originIndex];
-            //int destinationNode = path[destinationIndex];
-            //GraspSolution newSolution = new GraspSolution(solution.problemId, numberOfNodes, solution.rclSize);
-            //newSolution.SetPaths(solution.paths);
-            //newSolution.totalDistance = minDistance;
-            //newSolution.paths[index][originIndex] = destinationNode;
-            //newSolution.paths[index][destinationIndex] = originNode;
-            //return newSolution;
-            return solution;
+            int originNode = path[originIndex];
+            int destinationNode = path[destinationIndex];
+            GraspSolution newSolution = new GraspSolution(solution.problemId, numberOfNodes, solution.rclSize);
+            newSolution.SetPaths(solution.paths);
+            newSolution.totalDistance = minDistance;
+            newSolution.paths[index][originIndex] = destinationNode;
+            newSolution.paths[index][destinationIndex] = originNode;
+            return newSolution;
         }
 
         private GraspSolution GraspSingleRouteSwap(GraspSolution solution)
         {
-            //int MAX_ITERATIONS = 2000;
-            //List<int> pathsToCheck = Enumerable.Range(0, solution.paths.Count).ToList();
-            //int it = 0;
+            int MAX_ITERATIONS = 2000;
+            List<int> pathsToCheck = Enumerable.Range(0, solution.paths.Count).ToList();
+            int it = 0;
 
             GraspSolution bestSolution = solution;
 
-            //while (pathsToCheck.Count > 0 && it < MAX_ITERATIONS)
-            //{
-            //    for (int i = 0; i < pathsToCheck.Count; i++)
-            //    {
-            //        GraspSolution currentSolution = SingleRouteSwap(bestSolution, pathsToCheck[i]);
-            //        if (currentSolution.totalDistance == bestSolution.totalDistance)
-            //        {
-            //            pathsToCheck.RemoveAt(i);
-            //        }
-            //        if (currentSolution.totalDistance < bestSolution.totalDistance)
-            //        {
-            //            bestSolution = currentSolution;
-            //            // Búsqueda ansiosa:  pathsToCheck = Enumerable.Range(0, solution.paths.Count).ToList();
-            //        }
-            //    }
-            //    it++;
-            //}
+            while (pathsToCheck.Count > 0 && it < MAX_ITERATIONS)
+            {
+                for (int i = 0; i < pathsToCheck.Count; i++)
+                {
+                    GraspSolution currentSolution = SingleRouteSwap(bestSolution, pathsToCheck[i]);
+                    if (currentSolution.totalDistance == bestSolution.totalDistance)
+                    {
+                        pathsToCheck.RemoveAt(i);
+                    }
+                    if (currentSolution.totalDistance < bestSolution.totalDistance)
+                    {
+                        bestSolution = currentSolution;
+                        // Búsqueda ansiosa:  pathsToCheck = Enumerable.Range(0, solution.paths.Count).ToList();
+                    }
+                }
+                it++;
+            }
             return bestSolution;
         }
 
