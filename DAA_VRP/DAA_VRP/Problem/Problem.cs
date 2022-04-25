@@ -1,5 +1,8 @@
 ﻿namespace DAA_VRP
 {
+    /// <summary>
+    /// Represents a VRP problem.
+    /// </summary>
     public class Problem
     {
         public string sourceFilename = "";

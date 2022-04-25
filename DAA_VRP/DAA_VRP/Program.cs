@@ -2,6 +2,10 @@
 {
     class Program
     {
+
+        /// <summary>
+        /// Helper function to print the greedy solutions
+        /// </summary>
         public static void PrintGreedySolutions(List<GreedySolution> greedySolutions)
         {
             Console.WriteLine("Greedy Solutions:");
@@ -12,6 +16,10 @@
             }
             Console.WriteLine("\n");
         }
+        
+        /// <summary>
+        /// Helper function to print the grasp solutions
+        /// </summary>
         public static void PrintGraspSolutions(List<GraspSolution> greedySolutions)
         {
             Console.WriteLine("Greedy Solutions:");
@@ -24,10 +32,13 @@
             Console.WriteLine("\n");
         }
 
+        /// <summary>
+        /// Main entry of the program
+        /// </summary>
         public static void Main(string[] args)
         {
             int RCL_SIZE = 2;
-            GraspTypes DEFAULT_TYPE = GraspTypes.GRASP_MULTI_ROUTE_SWAP;
+            GraspTypes DEFAULT_TYPE = GraspTypes.GRASP_MULTI_ROUTE_INSERTION;
             string path;
             if (args.Length > 1)
             {

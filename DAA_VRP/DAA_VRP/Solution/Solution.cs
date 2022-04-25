@@ -1,5 +1,8 @@
 ﻿namespace DAA_VRP
 {
+    /// <summary>
+    /// Abstract class to store solutions
+    /// </summary>
     public abstract class Solution
     {
         public string problemId = "unspecified";
@@ -8,6 +11,10 @@
         public long elapsedMilliseconds = -1;
         public List<List<int>> paths = new List<List<int>>();
 
+        /// <summary>
+        /// Returns a string representation of the paths
+        /// </summary>
+        /// <returns></returns>
         public string GetPathsString()
         {
             string output = "";

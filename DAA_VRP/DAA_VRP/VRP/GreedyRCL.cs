@@ -1,6 +1,9 @@
 ﻿using System.Diagnostics;
 namespace DAA_VRP
 {
+    /// <summary>
+    /// Implements the Greedy algorithm
+    /// </summary>
     public class GreedyRCL
     {
 
@@ -107,6 +110,10 @@ namespace DAA_VRP
             return paths;
         }
 
+        /// <summary>
+        /// Solves the problem with the given RCL size
+        /// </summary>
+        /// <param name="rclSize">The RCL size to be used, default to 1</param>
         public GreedySolution Solve(int rclSize = 1)
         {
             Stopwatch sw = new Stopwatch();

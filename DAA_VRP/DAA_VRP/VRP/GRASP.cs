@@ -90,7 +90,7 @@ namespace DAA_VRP
         /// Implements the single route insertion local search
         /// </summary>
         /// <param name="solution">The current solution to explore</param>
-        private GraspSolution GaspSingleRouteInsertion(GraspSolution solution)
+        private GraspSolution GraspSingleRouteInsertion(GraspSolution solution)
         {
             int MAX_ITERATIONS = 2000;
             List<int> pathsToCheck = Enumerable.Range(0, solution.paths.Count).ToList();
@@ -140,14 +140,19 @@ namespace DAA_VRP
                     for (int destinationRoute = 0; destinationRoute < solution.paths.Count; destinationRoute++)
                     {
                         List<int> destinationPath = solution.paths[destinationRoute];
-
+                        if (destinationPath.Count + 1 > (int)(numberOfNodes / solution.paths.Count) + (numberOfNodes * 0.1))
+                        { continue; }
                         for (int candidatePosition = 1; candidatePosition < destinationPath.Count - 1; candidatePosition++)
                         {
-                            int nextCandidate = candidatePosition + 1;
+                            if (destinationPath == originPath && (candidatePosition == currentIndex || candidatePosition + 1 == currentIndex))
+                            {
+                                continue;
+                            }
+
                             int candidateDistance = distanceAfterRemoving +
-                                distanceMatrix[destinationPath[candidatePosition]][originPath[currentIndex]] +
-                                distanceMatrix[originPath[currentIndex]][destinationPath[nextCandidate]] -
-                                distanceMatrix[destinationPath[candidatePosition]][destinationPath[nextCandidate]];
+                                distanceMatrix[destinationPath[candidatePosition - 1]][originPath[currentIndex]] +
+                                distanceMatrix[originPath[currentIndex]][destinationPath[candidatePosition]] -
+                                distanceMatrix[destinationPath[candidatePosition]][destinationPath[candidatePosition + 1]];
 
                             if (candidateDistance < bestSolution.totalDistance)
                             {
@@ -159,6 +164,7 @@ namespace DAA_VRP
                                 bestSolution = newSolution;
                             }
                         }
+
                     }
 
                 }
@@ -167,7 +173,6 @@ namespace DAA_VRP
             return bestSolution;
 
         }
-
 
         /// <summary>
         /// Helper function for the single path swap local search
@@ -270,22 +275,22 @@ namespace DAA_VRP
                     {
                         List<int> destinationPath = solution.paths[destinationRoute];
                         int initializeValue = 1;
-                        
+
                         if (destinationRoute == currentRoute)
                         {
                             initializeValue = currentIndex + 2;
                         }
 
                         for (int candidatePosition = initializeValue; candidatePosition < destinationPath.Count - 1; candidatePosition++)
-                        {            
+                        {
                             int candidateDistance = distanceAfterRemoving -
-                                distanceMatrix[destinationPath[candidatePosition - 1]][destinationPath[candidatePosition]]-
+                                distanceMatrix[destinationPath[candidatePosition - 1]][destinationPath[candidatePosition]] -
                                 distanceMatrix[destinationPath[candidatePosition]][destinationPath[candidatePosition + 1]] +
 
                                 distanceMatrix[path[currentIndex - 1]][destinationPath[candidatePosition]] +
                                 distanceMatrix[destinationPath[candidatePosition]][path[currentIndex + 1]] +
 
-                                 distanceMatrix[destinationPath[candidatePosition-1]][path[currentIndex]] +
+                                 distanceMatrix[destinationPath[candidatePosition - 1]][path[currentIndex]] +
                                  distanceMatrix[path[currentIndex]][destinationPath[candidatePosition + 1]];
 
 
@@ -325,10 +330,10 @@ namespace DAA_VRP
                     return GraspMultiRouteSwap(solution);
 
                 case GraspTypes.GRASP_SINGLE_ROUTE_INSERTION:
-                    return GraspMultiRouteInsertion(solution);
+                    return GraspSingleRouteInsertion(solution);
 
                 case GraspTypes.GRASP_MULTI_ROUTE_INSERTION:
-                    return GaspSingleRouteInsertion(solution);
+                    return GraspMultiRouteInsertion(solution);
             }
             return solution;
         }
