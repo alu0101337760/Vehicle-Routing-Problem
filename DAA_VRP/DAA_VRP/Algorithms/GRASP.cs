@@ -21,7 +21,6 @@ namespace DAA_VRP
     {
         Problem problem;
         int numberOfNodes = -1;
-        int totalDistance = -1;
         List<List<int>> distanceMatrix = new List<List<int>>();
 
         /// <summary>
@@ -76,7 +75,6 @@ namespace DAA_VRP
 
             GraspSolution solution = new GraspSolution(problem.sourceFilename, numberOfNodes, rclSize);
             solution.SetPaths(greedySolution.paths);
-            solution.totalDistance = totalDistance;
             solution.totalDistance = greedySolution.totalDistance;
             return solution;
         }
@@ -92,10 +90,9 @@ namespace DAA_VRP
             sw.Start();
             GraspSolution bestSolution = new GraspSolution(problem.sourceFilename, numberOfNodes, rclSize);
             bestSolution.totalDistance = int.MaxValue;
-            for (int i = 0; i < 2000; i++)
-            {
-                GraspSolution candidate = GraspConstructivePhase(rclSize);
-                GraspSolution processed = LocalSearch(candidate, type);
+            for (int i = 0; i < 1000; i++)
+            {              
+                GraspSolution processed = LocalSearch(GraspConstructivePhase(rclSize), type);
                 if (processed.totalDistance < bestSolution.totalDistance)
                 {
                     bestSolution = processed;
