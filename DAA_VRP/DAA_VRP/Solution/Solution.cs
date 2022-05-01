@@ -41,6 +41,8 @@
             }
         }
 
-
+        public virtual int GetRclSize() {
+            return 1;
+        }
     }
 }
