@@ -4,7 +4,6 @@
     {
         Problem problem;
         int numberOfNodes = -1;
-        List<List<int>> distanceMatrix = new List<List<int>>();
 
         List<ILocalSearch> neighborhoodStructures = new List<ILocalSearch>{
             new MultiInsertion(),
@@ -17,7 +16,6 @@
         {
             this.problem = problem;
             this.numberOfNodes = problem.numberOfClients;
-            this.distanceMatrix = problem.distanceMatrix;
         }
 
         private GvnsSolution Shaking(GvnsSolution solution, int currentNeighborIndex)
@@ -42,7 +40,7 @@
                 }
             }
             
-            return solution;
+            return bestSolution;
         }
 
         private GvnsSolution GvnsConstructivePhase(int rclSize)
@@ -59,22 +57,26 @@
 
         public GvnsSolution Solve(int rclSize)
         {
-            GvnsSolution bestSolution = new GvnsSolution(problem.sourceFilename, numberOfNodes, rclSize);
-            bestSolution.totalDistance = int.MaxValue;
+            GvnsSolution bestSolution = GvnsConstructivePhase(rclSize);
 
-            GvnsSolution candidate = GvnsConstructivePhase(rclSize);
-            
+            int currentNeighborIndex = 0;
             for (int i = 0; i < 1000; i++)
             {
-                int currentNeighborIndex = 0;
-
-                candidate = Shaking(candidate, currentNeighborIndex);
+                GvnsSolution candidate = Shaking(bestSolution, currentNeighborIndex);
                 candidate = VND(candidate);
                 
                 if (candidate.totalDistance < bestSolution.totalDistance)
                 {
                     bestSolution = candidate;
                     currentNeighborIndex = 0;
+                }
+                else
+                {
+                    currentNeighborIndex++;
+                    if (currentNeighborIndex >= neighborhoodStructures.Count)
+                    {
+                        currentNeighborIndex = 0;
+                    }
                 }
             }
 
