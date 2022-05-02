@@ -17,6 +17,18 @@
             Console.WriteLine("\n");
         }
 
+        public static void PrintGvnsSolutions(List<GvnsSolution> GvnsSolutions)
+        {
+            Console.WriteLine("Greedy Solutions:");
+            Console.WriteLine(String.Format("\tfilename\tnodes\tcost\tmilliseconds"));
+            foreach (GvnsSolution solution in GvnsSolutions)
+            {
+                Console.WriteLine(solution.problemId + "\t" + solution.numberOfClients + "\t" + solution.totalDistance + "\t" + solution.elapsedMilliseconds);
+            }
+            Console.WriteLine("\n");
+        }
+
+
         /// <summary>
         /// Helper function to print the grasp solutions
         /// </summary>
@@ -92,6 +104,9 @@
 
             Console.WriteLine("Multi swap Insertion solutions:");
             PrintGraspSolutions(multiSwapSolutions);
+
+            Console.WriteLine("Gvns solutions:");
+            PrintGvnsSolutions(gvnsSolutions);
 
         }
     }

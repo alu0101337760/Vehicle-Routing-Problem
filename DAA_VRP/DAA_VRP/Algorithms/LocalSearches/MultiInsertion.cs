@@ -74,7 +74,7 @@
             int pathToInsert = random == pathToRemove ? pathToRemove + 1 : random;
             pathToInsert = pathToInsert == solution.paths.Count ? 0 : pathToInsert;
             int indexToRemove = rnd.Next(1, solution.paths[pathToRemove].Count - 2);
-            int positionToInsert = rnd.Next(1, solution.paths[pathToRemove].Count - 2);
+            int positionToInsert = rnd.Next(1, solution.paths[pathToInsert].Count - 2);
             int nodeToInsert = solution.paths[pathToRemove][indexToRemove];
 
             List<List<int>> distanceMatrix = problem.distanceMatrix;

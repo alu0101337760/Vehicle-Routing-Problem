@@ -90,7 +90,7 @@
             int pathB = random == pathA ? pathA + 1 : random;
             pathB = pathB == solution.paths.Count ? 0 : pathB;
             int indexA = rnd.Next(1, solution.paths[pathA].Count - 2);
-            int indexB = rnd.Next(1, solution.paths[pathA].Count - 2);
+            int indexB = rnd.Next(1, solution.paths[pathB].Count - 2);
 
             List<List<int>> distanceMatrix = problem.distanceMatrix;
             List<int> originPath = solution.paths[pathA];
