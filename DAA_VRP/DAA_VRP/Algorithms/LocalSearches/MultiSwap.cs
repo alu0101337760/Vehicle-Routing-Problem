@@ -84,7 +84,42 @@
 
         public Solution Shake(Problem problem, Solution solution)
         {
-            throw new NotImplementedException();
+            Random rnd = new Random();
+            int pathA = rnd.Next(0, solution.paths.Count - 1);
+            int random = rnd.Next(0, solution.paths.Count - 1);
+            int pathB = random == pathA ? pathA + 1 : random;
+            pathB = pathB == solution.paths.Count ? 0 : pathB;
+            int indexA = rnd.Next(1, solution.paths[pathA].Count - 2);
+            int indexB = rnd.Next(1, solution.paths[pathA].Count - 2);
+
+            List<List<int>> distanceMatrix = problem.distanceMatrix;
+            List<int> originPath = solution.paths[pathA];
+            List<int> destinationPath = solution.paths[pathB];
+
+            int distanceAfterRemoving = solution.totalDistance -
+                             distanceMatrix[originPath[indexA]][originPath[indexA + 1]] -
+                             distanceMatrix[originPath[indexA - 1]][originPath[indexA]];
+
+            int minDistance = distanceAfterRemoving -
+                                        distanceMatrix[destinationPath[indexB - 1]][destinationPath[indexB]] -
+                                        distanceMatrix[destinationPath[indexB]][destinationPath[indexB + 1]] +
+
+                                        distanceMatrix[originPath[indexA - 1]][destinationPath[indexB]] +
+                                        distanceMatrix[destinationPath[indexB]][originPath[indexA + 1]] +
+
+                                         distanceMatrix[destinationPath[indexB - 1]][originPath[indexA]] +
+                                         distanceMatrix[originPath[indexA]][destinationPath[indexB + 1]];
+
+            GvnsSolution newSolution = new GvnsSolution(solution.problemId, solution.numberOfClients, solution.GetRclSize());
+            newSolution.SetPaths(solution.paths);
+            newSolution.totalDistance = solution.totalDistance;          
+
+            newSolution.totalDistance = minDistance;
+            int temp = newSolution.paths[pathA][indexA];
+            newSolution.paths[pathA][indexA] = newSolution.paths[pathB][indexB];
+            newSolution.paths[pathB][indexB] = temp;
+            return newSolution;
+
         }
     }
     }
