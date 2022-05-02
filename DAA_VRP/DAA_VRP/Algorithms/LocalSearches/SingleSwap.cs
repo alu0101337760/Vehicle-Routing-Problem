@@ -90,10 +90,40 @@
             return bestSolution;
         }
 
-  
+
         public Solution Shake(Problem problem, Solution solution)
         {
-            throw new NotImplementedException();
+            Random rnd = new Random();
+            int pathToSwap = rnd.Next(0, solution.paths.Count - 1);
+            int indexA = rnd.Next(1, solution.paths[pathToSwap].Count - 2);
+            int indexB = rnd.Next(1, solution.paths[pathToSwap].Count - 2);
+
+            List<List<int>> distanceMatrix = problem.distanceMatrix;
+            List<int> path = solution.paths[pathToSwap];
+
+            int distanceAfterRemoving = solution.totalDistance -
+                  distanceMatrix[path[indexA]][path[indexA + 1]] -
+                  distanceMatrix[path[indexA - 1]][path[indexA]];
+
+            int minDistance = distanceAfterRemoving -
+                distanceMatrix[path[indexB - 1]][path[indexB]] -
+                distanceMatrix[path[indexB]][path[indexB + 1]] +
+
+                distanceMatrix[path[indexA - 1]][path[indexB]] +
+                distanceMatrix[path[indexB]][path[indexA + 1]] +
+
+                distanceMatrix[path[indexB - 1]][path[indexA]] +
+                distanceMatrix[path[indexA]][path[indexB + 1]];
+
+            int originNode = path[indexA];
+            int destinationNode = path[indexB];
+            GvnsSolution newSolution = new GvnsSolution(solution.problemId, solution.numberOfClients, solution.GetRclSize());
+            newSolution.SetPaths(solution.paths);
+            newSolution.totalDistance = minDistance;
+            newSolution.paths[pathToSwap][indexA] = destinationNode;
+            newSolution.paths[pathToSwap][indexB] = originNode;
+            return newSolution;
+
         }
     }
 }
