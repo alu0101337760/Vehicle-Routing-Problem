@@ -1,4 +1,6 @@
-﻿namespace DAA_VRP
+﻿using System.Diagnostics;
+
+namespace DAA_VRP
 {
     public class GVNS
     {
@@ -66,8 +68,10 @@
         public GvnsSolution Solve(int rclSize)
         {
             GvnsSolution bestSolution = GvnsConstructivePhase(rclSize);
-
             int k = 0;
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             for (int i = 0; i < 2000; i++)
             {
                 GvnsSolution candidate = Shaking(bestSolution, k);
@@ -89,6 +93,8 @@
                     }
                 }
             }
+            sw.Stop();
+            bestSolution.elapsedMilliseconds = sw.ElapsedMilliseconds;
             return bestSolution;
         } 
     }
