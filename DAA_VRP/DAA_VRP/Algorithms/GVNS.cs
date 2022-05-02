@@ -68,7 +68,7 @@
             GvnsSolution bestSolution = GvnsConstructivePhase(rclSize);
 
             int k = 0;
-            for (int i = 0; i < 5000; i++)
+            for (int i = 0; i < 2000; i++)
             {
                 GvnsSolution candidate = Shaking(bestSolution, k);
                 if(candidate.totalDistance != CalculateDistance(candidate.paths))

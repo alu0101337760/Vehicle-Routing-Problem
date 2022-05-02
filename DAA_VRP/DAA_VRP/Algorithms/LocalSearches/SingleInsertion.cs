@@ -101,13 +101,29 @@
         public Solution Shake(Problem problem, Solution solution)
         {
             Random rnd = new Random();
-            int pathToRemove = rnd.Next(0, solution.paths.Count - 1);
+            List<int> candidatePaths = new List<int>();
+
+            for (int i = 0; i < solution.paths.Count; i++)
+            {
+                if (solution.paths[i].Count > 2)
+                {
+                    candidatePaths.Add(i);
+                }
+            }
+
+            int pathToRemove = candidatePaths[rnd.Next(candidatePaths.Count)];
 
             int originIndex = rnd.Next(1, solution.paths[pathToRemove].Count - 2);
 
-            int destinationIndex = rnd.Next(1, solution.paths[pathToRemove].Count - 2);
-            destinationIndex = (destinationIndex == originIndex || destinationIndex == originIndex - 1) ? originIndex + 2 : destinationIndex;
-            destinationIndex = (destinationIndex > solution.paths[pathToRemove].Count - 2) ? 1 : destinationIndex;
+            List<int> candidateIndexes = new List<int>();
+            for (int i = 1; i < solution.paths[pathToRemove].Count-1; i++)
+            {
+                if (i != originIndex && i != originIndex - 1)
+                {
+                    candidateIndexes.Add(i);
+                }
+            }
+            int destinationIndex = candidateIndexes[rnd.Next(0, candidateIndexes.Count - 1)];
 
             int nodeToInsert = solution.paths[pathToRemove][originIndex];
 

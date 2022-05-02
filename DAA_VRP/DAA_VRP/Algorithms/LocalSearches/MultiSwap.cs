@@ -85,11 +85,37 @@
         public Solution Shake(Problem problem, Solution solution)
         {
             Random rnd = new Random();
-            int pathA = rnd.Next(0, solution.paths.Count - 1);
+
+            List<int> candidatePathsToRemove = new List<int>();
+
+            for (int i = 0; i < solution.paths.Count; i++)
+            {
+                if (solution.paths[i].Count > 2)
+                {
+                    candidatePathsToRemove.Add(i);
+                }
+            }
             
-            int pathB = rnd.Next(0, solution.paths.Count - 1);
-            pathB = pathB == pathA ? pathA + 1 : pathB;
-            pathB = pathB == solution.paths.Count ? 0 : pathB;
+            int pathA = candidatePathsToRemove[rnd.Next(candidatePathsToRemove.Count)];
+
+            int numberOfNodes = problem.numberOfClients;
+
+            List<int> candidatePaths = new List<int>();
+            for (int i = 0; i < solution.paths.Count; i++)
+            {
+                if (i != pathA && solution.paths[i].Count + 1 < (numberOfNodes / solution.paths.Count) + (numberOfNodes * 0.1) && solution.paths[i].Count > 2)
+                {
+                    candidatePaths.Add(i);
+                }
+
+            }
+            
+            if (candidatePaths.Count == 0)
+            {
+                return solution;
+            }
+            
+            int pathB = candidatePaths[rnd.Next(candidatePaths.Count)];
             
             int indexA = rnd.Next(1, solution.paths[pathA].Count - 2);
             int indexB = rnd.Next(1, solution.paths[pathB].Count - 2);

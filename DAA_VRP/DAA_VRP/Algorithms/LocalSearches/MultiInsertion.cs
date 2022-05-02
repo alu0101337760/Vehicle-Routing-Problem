@@ -69,24 +69,35 @@
         public Solution Shake(Problem problem, Solution solution)
         {
             Random rnd = new Random();
-            int pathToRemove = rnd.Next(0, solution.paths.Count - 1);
-            
+
+            List<int> candidatePathsToRemove = new List<int>();
+
+            for (int i = 0; i < solution.paths.Count; i++)
+            {
+                if (solution.paths[i].Count > 2)
+                {
+                    candidatePathsToRemove.Add(i);
+                }
+            }
+            int pathToRemove = candidatePathsToRemove[rnd.Next(candidatePathsToRemove.Count)];
+
             int numberOfNodes = problem.numberOfClients;
 
             List<int> candidatePaths = new List<int>();
             for (int i = 0; i < solution.paths.Count; i++)
             {
-                if (i != pathToRemove && solution.paths[i].Count + 1 < (numberOfNodes / solution.paths.Count) + (numberOfNodes * 0.1))
+                if (i != pathToRemove && solution.paths[i].Count + 1 < (numberOfNodes / solution.paths.Count) + (numberOfNodes * 0.1) && solution.paths[i].Count > 2)
                 {
                     candidatePaths.Add(i);
                 }
+
             }
             if (candidatePaths.Count == 0)
             {
                 return solution;
             }
 
-            int pathToInsert = candidatePaths[rnd.Next(0, candidatePaths.Count - 1)];            
+            int pathToInsert = candidatePaths[rnd.Next(0, candidatePaths.Count - 1)];
 
             int indexToRemove = rnd.Next(1, solution.paths[pathToRemove].Count - 2);
             int positionToInsert = rnd.Next(1, solution.paths[pathToInsert].Count - 2);
@@ -112,13 +123,14 @@
             newSolution.paths[pathToInsert].Insert(positionToInsert, nodeToInsert);
             newSolution.totalDistance = minDistance;
 
-            for (int i = 0; i < newSolution.paths.Count; i++) {
+            for (int i = 0; i < newSolution.paths.Count; i++)
+            {
                 if (newSolution.paths[i].Count > (numberOfNodes / solution.paths.Count) + (numberOfNodes * 0.1))
                 {
                     throw new Exception("Path is too long");
                 }
             }
-            
+
             return newSolution;
         }
     }

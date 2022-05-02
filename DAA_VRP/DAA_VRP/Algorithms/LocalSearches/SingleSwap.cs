@@ -111,7 +111,7 @@
             int indexA = rnd.Next(1, solution.paths[pathToSwap].Count - 2);
             
             List<int> candidates = new List<int>();            
-            for (int i = 1; i < solution.paths[pathToSwap].Count - 2; i++)
+            for (int i = 1; i < solution.paths[pathToSwap].Count - 1; i++)
             {
                 if (i != indexA - 1 && i != indexA + 1 && i != indexA)                
                 {
