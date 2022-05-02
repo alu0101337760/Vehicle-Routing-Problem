@@ -150,27 +150,8 @@
             newSolution.paths[pathToSwap][indexA] = destinationNode;
             newSolution.paths[pathToSwap][indexB] = originNode;
 
-            if (newSolution.totalDistance != CalculateDistance(newSolution.paths))
-            {
-                throw new Exception("Distance is not equal");
-            }
 
             return newSolution;
         }
-
-        public int CalculateDistance(List<List<int>> paths)
-        {
-            int distance = 0;
-            for (int i = 0; i < paths.Count; i++)
-            {
-                for (int j = 0; j < paths[i].Count - 1; j++)
-                {
-                    distance += distanceMatrix[paths[i][j]][paths[i][j + 1]];
-                }
-            }
-            return distance;
-        }
-
     }
-
 }

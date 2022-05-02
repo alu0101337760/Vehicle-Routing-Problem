@@ -71,15 +71,9 @@
             for (int i = 0; i < 2000; i++)
             {
                 GvnsSolution candidate = Shaking(bestSolution, k);
-                if(candidate.totalDistance != CalculateDistance(candidate.paths))
-                {
-                    throw new Exception("Distance is not equal");
-                }
+            
                 candidate = VND(candidate);
-                if (candidate.totalDistance != CalculateDistance(candidate.paths))
-                {
-                    throw new Exception("Distance is not equal");
-                }
+            
                 if (candidate.totalDistance < bestSolution.totalDistance)
                 {
                     bestSolution = candidate;
@@ -96,19 +90,6 @@
                 }
             }
             return bestSolution;
-        }
-
-        public int CalculateDistance(List<List<int>> paths)
-        {
-            int distance = 0;
-            for (int i = 0; i < paths.Count; i++)
-            {
-                for (int j = 0; j < paths[i].Count - 1; j++)
-                {
-                    distance += problem.distanceMatrix[paths[i][j]][paths[i][j + 1]];
-                }
-            }
-            return distance;
-        }
+        } 
     }
 }

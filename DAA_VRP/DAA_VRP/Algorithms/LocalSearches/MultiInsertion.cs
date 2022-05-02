@@ -123,14 +123,6 @@
             newSolution.paths[pathToInsert].Insert(positionToInsert, nodeToInsert);
             newSolution.totalDistance = minDistance;
 
-            for (int i = 0; i < newSolution.paths.Count; i++)
-            {
-                if (newSolution.paths[i].Count > (numberOfNodes / solution.paths.Count) + (numberOfNodes * 0.1))
-                {
-                    throw new Exception("Path is too long");
-                }
-            }
-
             return newSolution;
         }
     }

@@ -14,73 +14,73 @@
             int numberOfNodes = problem.numberOfClients;
             Solution bestSolution = solution;
 
-                int pathA = 0;
-                int pathB = 0;
-                int nodeA = 0;
-                int nodeB = 0;
-                int minDistance = solution.totalDistance;
+            int pathA = 0;
+            int pathB = 0;
+            int nodeA = 0;
+            int nodeB = 0;
+            int minDistance = solution.totalDistance;
 
 
-                bool foundSolution = false;
-                while (foundSolution)
+            bool foundSolution = false;
+            while (foundSolution)
+            {
+                foundSolution = false;
+                for (int currentRoute = 0; currentRoute < bestSolution.paths.Count; currentRoute++)
                 {
-                    foundSolution = false;
-                    for (int currentRoute = 0; currentRoute < bestSolution.paths.Count; currentRoute++)
+                    List<int> currentPath = bestSolution.paths[currentRoute];
+                    for (int currentIndex = 1; currentIndex < currentPath.Count - 1; currentIndex++)
                     {
-                        List<int> currentPath = bestSolution.paths[currentRoute];
-                        for (int currentIndex = 1; currentIndex < currentPath.Count - 1; currentIndex++)
+                        int distanceAfterRemoving = bestSolution.totalDistance -
+                            distanceMatrix[currentPath[currentIndex]][currentPath[currentIndex + 1]] -
+                            distanceMatrix[currentPath[currentIndex - 1]][currentPath[currentIndex]];
+
+                        for (int destinationRoute = currentRoute; destinationRoute < bestSolution.paths.Count; destinationRoute++)
                         {
-                            int distanceAfterRemoving = bestSolution.totalDistance -
-                                distanceMatrix[currentPath[currentIndex]][currentPath[currentIndex + 1]] -
-                                distanceMatrix[currentPath[currentIndex - 1]][currentPath[currentIndex]];
+                            List<int> destinationPath = bestSolution.paths[destinationRoute];
+                            int initializeValue = 1;
 
-                            for (int destinationRoute = currentRoute; destinationRoute < bestSolution.paths.Count; destinationRoute++)
+                            if (destinationRoute == currentRoute)
                             {
-                                List<int> destinationPath = bestSolution.paths[destinationRoute];
-                                int initializeValue = 1;
+                                initializeValue = currentIndex + 2;
+                            }
 
-                                if (destinationRoute == currentRoute)
+                            for (int candidatePosition = initializeValue; candidatePosition < destinationPath.Count - 1; candidatePosition++)
+                            {
+                                int candidateDistance = distanceAfterRemoving -
+                                    distanceMatrix[destinationPath[candidatePosition - 1]][destinationPath[candidatePosition]] -
+                                    distanceMatrix[destinationPath[candidatePosition]][destinationPath[candidatePosition + 1]] +
+
+                                    distanceMatrix[currentPath[currentIndex - 1]][destinationPath[candidatePosition]] +
+                                    distanceMatrix[destinationPath[candidatePosition]][currentPath[currentIndex + 1]] +
+
+                                     distanceMatrix[destinationPath[candidatePosition - 1]][currentPath[currentIndex]] +
+                                     distanceMatrix[currentPath[currentIndex]][destinationPath[candidatePosition + 1]];
+
+
+                                if (candidateDistance < bestSolution.totalDistance)
                                 {
-                                    initializeValue = currentIndex + 2;
-                                }
-
-                                for (int candidatePosition = initializeValue; candidatePosition < destinationPath.Count - 1; candidatePosition++)
-                                {
-                                    int candidateDistance = distanceAfterRemoving -
-                                        distanceMatrix[destinationPath[candidatePosition - 1]][destinationPath[candidatePosition]] -
-                                        distanceMatrix[destinationPath[candidatePosition]][destinationPath[candidatePosition + 1]] +
-
-                                        distanceMatrix[currentPath[currentIndex - 1]][destinationPath[candidatePosition]] +
-                                        distanceMatrix[destinationPath[candidatePosition]][currentPath[currentIndex + 1]] +
-
-                                         distanceMatrix[destinationPath[candidatePosition - 1]][currentPath[currentIndex]] +
-                                         distanceMatrix[currentPath[currentIndex]][destinationPath[candidatePosition + 1]];
-
-
-                                    if (candidateDistance < bestSolution.totalDistance)
-                                    {
-                                        pathA = currentRoute;
-                                        pathB = destinationRoute;
-                                        nodeA = currentIndex;
-                                        nodeB = candidatePosition;
-                                        minDistance = candidateDistance;
-                                        foundSolution = true;
-                                    }
+                                    pathA = currentRoute;
+                                    pathB = destinationRoute;
+                                    nodeA = currentIndex;
+                                    nodeB = candidatePosition;
+                                    minDistance = candidateDistance;
+                                    foundSolution = true;
                                 }
                             }
                         }
                     }
-                    if (foundSolution)
-                    {
-                        bestSolution.totalDistance = minDistance;
-                        int temp = bestSolution.paths[pathA][nodeA];
-                        bestSolution.paths[pathA][nodeA] = bestSolution.paths[pathB][nodeB];
-                        bestSolution.paths[pathB][nodeB] = temp;
-                    }
                 }
-
-                return bestSolution;
+                if (foundSolution)
+                {
+                    bestSolution.totalDistance = minDistance;
+                    int temp = bestSolution.paths[pathA][nodeA];
+                    bestSolution.paths[pathA][nodeA] = bestSolution.paths[pathB][nodeB];
+                    bestSolution.paths[pathB][nodeB] = temp;
+                }
             }
+
+            return bestSolution;
+        }
 
         public Solution Shake(Problem problem, Solution solution)
         {
@@ -95,7 +95,7 @@
                     candidatePathsToRemove.Add(i);
                 }
             }
-            
+
             int pathA = candidatePathsToRemove[rnd.Next(candidatePathsToRemove.Count)];
 
             int numberOfNodes = problem.numberOfClients;
@@ -109,14 +109,14 @@
                 }
 
             }
-            
+
             if (candidatePaths.Count == 0)
             {
                 return solution;
             }
-            
+
             int pathB = candidatePaths[rnd.Next(candidatePaths.Count)];
-            
+
             int indexA = rnd.Next(1, solution.paths[pathA].Count - 2);
             int indexB = rnd.Next(1, solution.paths[pathB].Count - 2);
 
@@ -140,7 +140,7 @@
 
             GvnsSolution newSolution = new GvnsSolution(solution.problemId, solution.numberOfClients, solution.GetRclSize());
             newSolution.SetPaths(solution.paths);
-            newSolution.totalDistance = solution.totalDistance;          
+            newSolution.totalDistance = solution.totalDistance;
 
             newSolution.totalDistance = minDistance;
             int temp = newSolution.paths[pathA][indexA];
@@ -150,4 +150,4 @@
 
         }
     }
-    }
+}

@@ -116,7 +116,7 @@
             int originIndex = rnd.Next(1, solution.paths[pathToRemove].Count - 2);
 
             List<int> candidateIndexes = new List<int>();
-            for (int i = 1; i < solution.paths[pathToRemove].Count-1; i++)
+            for (int i = 1; i < solution.paths[pathToRemove].Count - 1; i++)
             {
                 if (i != originIndex && i != originIndex - 1)
                 {
@@ -131,7 +131,7 @@
             List<int> path = solution.paths[pathToRemove];
 
             this.distanceMatrix = distanceMatrix;
-            
+
 
             int distanceAfterRemoving = solution.totalDistance -
                               distanceMatrix[path[originIndex]][path[originIndex + 1]] -
@@ -161,26 +161,7 @@
             newSolution.paths[pathToRemove].RemoveAt(originIndex);
             newSolution.paths[pathToRemove].Insert(destinationIndex, nodeToInsert);
 
-            if (newSolution.totalDistance != CalculateDistance(newSolution.paths))
-            {
-                throw new Exception("Distance is not equal");
-            }
-            
             return newSolution;
-
-        }
-
-        public int CalculateDistance(List<List<int>> paths)
-        {
-            int distance = 0;
-            for (int i = 0; i < paths.Count; i++)
-            {
-                for (int j = 0; j < paths[i].Count - 1; j++)
-                {
-                    distance += distanceMatrix[paths[i][j]][paths[i][j + 1]];
-                }
-            }
-            return distance;
         }
     }
 }
