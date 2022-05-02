@@ -105,7 +105,7 @@
 
             for (int i = 0; i < solution.paths.Count; i++)
             {
-                if (solution.paths[i].Count > 2)
+                if (solution.paths[i].Count > 3)
                 {
                     candidatePaths.Add(i);
                 }
