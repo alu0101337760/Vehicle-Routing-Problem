@@ -70,35 +70,52 @@
         {
             Random rnd = new Random();
             int pathToRemove = rnd.Next(0, solution.paths.Count - 1);
-            int random = rnd.Next(0, solution.paths.Count - 1);
-            int pathToInsert = random == pathToRemove ? pathToRemove + 1 : random;
-            pathToInsert = pathToInsert == solution.paths.Count ? 0 : pathToInsert;
+
+            int pathToInsert = -1;
+            int numberOfNodes = problem.numberOfClients;
+            for (int i = 0; i < solution.paths.Count; i++)
+            {
+                if (i != pathToRemove && solution.paths[i].Count + 1 < (numberOfNodes / solution.paths.Count) + (numberOfNodes * 0.1))
+                {
+                    pathToInsert = i;
+                }
+            }
+            if(pathToInsert == -1)
+            {
+                return solution;
+            }
+            
             int indexToRemove = rnd.Next(1, solution.paths[pathToRemove].Count - 2);
             int positionToInsert = rnd.Next(1, solution.paths[pathToInsert].Count - 2);
-            int nodeToInsert = solution.paths[pathToRemove][indexToRemove];
 
             List<List<int>> distanceMatrix = problem.distanceMatrix;
             List<int> originPath = solution.paths[pathToRemove];
             List<int> destinationPath = solution.paths[pathToInsert];
 
-
-            int distanceAfterRemoving = solution.totalDistance -
+            int minDistance = solution.totalDistance -
                        distanceMatrix[originPath[indexToRemove]][originPath[indexToRemove + 1]] -
                        distanceMatrix[originPath[indexToRemove - 1]][originPath[indexToRemove]] +
-                       distanceMatrix[originPath[indexToRemove - 1]][originPath[indexToRemove + 1]];
-
-            int minDistance = distanceAfterRemoving +
-                                distanceMatrix[originPath[indexToRemove]][destinationPath[positionToInsert]] +
-                                distanceMatrix[destinationPath[positionToInsert - 1]][originPath[indexToRemove]] -
-                                distanceMatrix[destinationPath[positionToInsert - 1]][destinationPath[positionToInsert]];
+                       distanceMatrix[originPath[indexToRemove - 1]][originPath[indexToRemove + 1]] +
+                       distanceMatrix[originPath[indexToRemove]][destinationPath[positionToInsert]] +
+                       distanceMatrix[destinationPath[positionToInsert - 1]][originPath[indexToRemove]] -
+                       distanceMatrix[destinationPath[positionToInsert - 1]][destinationPath[positionToInsert]];
 
             GvnsSolution newSolution = new GvnsSolution(solution.problemId, solution.numberOfClients, solution.GetRclSize());
             newSolution.SetPaths(solution.paths);
             newSolution.totalDistance = solution.totalDistance;
-            
+
+            int nodeToInsert = solution.paths[pathToRemove][indexToRemove];
             newSolution.paths[pathToRemove].RemoveAt(indexToRemove);
             newSolution.paths[pathToInsert].Insert(positionToInsert, nodeToInsert);
             newSolution.totalDistance = minDistance;
+
+            for (int i = 0; i < newSolution.paths.Count; i++) {
+                if (newSolution.paths[i].Count > (numberOfNodes / solution.paths.Count) + (numberOfNodes * 0.1))
+                {
+                    throw new Exception("Path is too long");
+                }
+            }
+            
             return newSolution;
         }
     }

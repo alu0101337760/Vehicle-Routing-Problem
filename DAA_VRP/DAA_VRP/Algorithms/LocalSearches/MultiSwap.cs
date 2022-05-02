@@ -86,9 +86,11 @@
         {
             Random rnd = new Random();
             int pathA = rnd.Next(0, solution.paths.Count - 1);
+            
             int pathB = rnd.Next(0, solution.paths.Count - 1);
             pathB = pathB == pathA ? pathA + 1 : pathB;
             pathB = pathB == solution.paths.Count ? 0 : pathB;
+            
             int indexA = rnd.Next(1, solution.paths[pathA].Count - 2);
             int indexB = rnd.Next(1, solution.paths[pathB].Count - 2);
 

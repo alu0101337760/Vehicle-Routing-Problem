@@ -30,22 +30,24 @@
             bestSolution.SetPaths(solution.paths);
             bestSolution.rclSize = solution.GetRclSize();
             bestSolution.totalDistance = solution.totalDistance;
+
+
             GvnsSolution currentSolution = new GvnsSolution(solution.problemId, solution.numberOfClients, solution.GetRclSize());
             currentSolution.SetPaths(solution.paths);
             currentSolution.rclSize = solution.GetRclSize();
             currentSolution.totalDistance = solution.totalDistance;
-            
+
 
             for (int i = 0; i < currentNeighborIndex; i++)
             {
-                currentSolution = (GvnsSolution) neighborhoodStructures[i].Search(problem, (Solution)currentSolution);
+                currentSolution = (GvnsSolution)neighborhoodStructures[i].Search(problem, (Solution)currentSolution);
                 if (currentSolution.totalDistance < bestSolution.totalDistance)
                 {
                     bestSolution = currentSolution;
                     currentNeighborIndex = 0;
                 }
             }
-            
+
             return bestSolution;
         }
 
@@ -65,37 +67,34 @@
         {
             GvnsSolution bestSolution = GvnsConstructivePhase(rclSize);
 
-            int currentNeighborIndex = 0;
-            for (int i = 0; i < 1000; i++)
+            int k = 0;
+            for (int i = 0; i < 5000; i++)
             {
-                GvnsSolution candidate = Shaking(bestSolution, currentNeighborIndex);
-                if (candidate.totalDistance != CalculateDistance(candidate.paths))
+                GvnsSolution candidate = Shaking(bestSolution, k);
+                if(candidate.totalDistance != CalculateDistance(candidate.paths))
                 {
-                    throw new Exception("Distance is not correct");
+                    throw new Exception("Distance is not equal");
                 }
                 candidate = VND(candidate);
-
                 if (candidate.totalDistance != CalculateDistance(candidate.paths))
                 {
-                    throw new Exception("Distance is not correct");
+                    throw new Exception("Distance is not equal");
                 }
-
-                
                 if (candidate.totalDistance < bestSolution.totalDistance)
-                {                    
+                {
                     bestSolution = candidate;
-                    currentNeighborIndex = 0;
+                    k = 0;
+                    i = 0;
                 }
                 else
                 {
-                    currentNeighborIndex++;
-                    if (currentNeighborIndex >= neighborhoodStructures.Count)
+                    k++;
+                    if (k >= neighborhoodStructures.Count)
                     {
-                        currentNeighborIndex = 0;
+                        k = 0;
                     }
                 }
             }
-
             return bestSolution;
         }
 
@@ -111,6 +110,5 @@
             }
             return distance;
         }
-
     }
 }
