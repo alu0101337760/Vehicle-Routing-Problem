@@ -2,7 +2,7 @@
 {
     public class MultiInsertion : ILocalSearch
     {
-        public Solution Search(Problem problem, Solution solution, bool shaking = false)
+        public Solution Search(Problem problem, Solution solution)
         {
             List<List<int>> distanceMatrix = problem.distanceMatrix;
             int numberOfNodes = problem.numberOfClients;
@@ -64,6 +64,42 @@
                 }
             }
             return bestSolution;
+        }
+
+        public Solution Shake(Problem problem, Solution solution)
+        {
+            Random rnd = new Random();
+            int pathToRemove = rnd.Next(0, solution.paths.Count - 1);
+            int random = rnd.Next(0, solution.paths.Count - 1);
+            int pathToInsert = random == pathToRemove ? pathToRemove + 1 : random;
+            pathToInsert = pathToInsert == solution.paths.Count ? 0 : pathToInsert;
+            int indexToRemove = rnd.Next(1, solution.paths[pathToRemove].Count - 2);
+            int positionToInsert = rnd.Next(1, solution.paths[pathToRemove].Count - 2);
+            int nodeToInsert = solution.paths[pathToRemove][indexToRemove];
+
+            List<List<int>> distanceMatrix = problem.distanceMatrix;
+            List<int> originPath = solution.paths[pathToRemove];
+            List<int> destinationPath = solution.paths[pathToInsert];
+
+
+            int distanceAfterRemoving = solution.totalDistance -
+                       distanceMatrix[originPath[indexToRemove]][originPath[indexToRemove + 1]] -
+                       distanceMatrix[originPath[indexToRemove - 1]][originPath[indexToRemove]] +
+                       distanceMatrix[originPath[indexToRemove - 1]][originPath[indexToRemove + 1]];
+
+            int minDistance = distanceAfterRemoving +
+                                distanceMatrix[originPath[indexToRemove]][destinationPath[positionToInsert]] +
+                                distanceMatrix[destinationPath[positionToInsert - 1]][originPath[indexToRemove]] -
+                                distanceMatrix[destinationPath[positionToInsert - 1]][destinationPath[positionToInsert]];
+
+            GvnsSolution newSolution = new GvnsSolution(solution.problemId, solution.numberOfClients, solution.GetRclSize());
+            newSolution.SetPaths(solution.paths);
+            newSolution.totalDistance = solution.totalDistance;
+            
+            newSolution.paths[pathToRemove].RemoveAt(indexToRemove);
+            newSolution.paths[pathToInsert].Insert(positionToInsert, nodeToInsert);
+            newSolution.totalDistance = minDistance;
+            return newSolution;
         }
     }
 }

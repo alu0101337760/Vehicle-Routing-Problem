@@ -20,16 +20,22 @@
 
         private GvnsSolution Shaking(GvnsSolution solution, int currentNeighborIndex)
         {
-            ILocalSearch currentSearch = neighborhoodStructures[currentNeighborIndex];
-            return solution;
+            return (GvnsSolution)neighborhoodStructures[currentNeighborIndex].Shake(problem, (Solution)solution);
         }
 
         private GvnsSolution VND(GvnsSolution solution)
         {
             int currentNeighborIndex = 0;
-            GvnsSolution bestSolution = solution;
+            GvnsSolution bestSolution = new GvnsSolution(solution.problemId, solution.numberOfClients, solution.GetRclSize());
+            bestSolution.SetPaths(solution.paths);
+            bestSolution.rclSize = solution.GetRclSize();
+            bestSolution.totalDistance = solution.totalDistance;
             GvnsSolution currentSolution = new GvnsSolution(solution.problemId, solution.numberOfClients, solution.GetRclSize());
+            currentSolution.SetPaths(solution.paths);
+            currentSolution.rclSize = solution.GetRclSize();
+            currentSolution.totalDistance = solution.totalDistance;
             
+
             for (int i = 0; i < currentNeighborIndex; i++)
             {
                 currentSolution = (GvnsSolution) neighborhoodStructures[i].Search(problem, (Solution)currentSolution);

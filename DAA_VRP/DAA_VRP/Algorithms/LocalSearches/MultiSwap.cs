@@ -8,7 +8,7 @@
         /// Implements the multi route swap local search
         /// </summary>
         /// <param name="solution">The current solution to explore</param>
-        public Solution Search(Problem problem, Solution solution, bool shaking = false)
+        public Solution Search(Problem problem, Solution solution)
         {
             List<List<int>> distanceMatrix = problem.distanceMatrix;
             int numberOfNodes = problem.numberOfClients;
@@ -82,5 +82,9 @@
                 return bestSolution;
             }
 
+        public Solution Shake(Problem problem, Solution solution)
+        {
+            throw new NotImplementedException();
         }
+    }
     }

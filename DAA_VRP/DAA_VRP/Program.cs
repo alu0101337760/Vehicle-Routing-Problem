@@ -62,6 +62,7 @@
             List<GraspSolution> singleInsertionSolutions = new List<GraspSolution>();
             List<GraspSolution> singleSwapSolutions = new List<GraspSolution>();
             List<GraspSolution> multiSwapSolutions = new List<GraspSolution>();
+            List<GvnsSolution> gvnsSolutions = new List<GvnsSolution>();
 
 
             foreach (string filename in Directory.EnumerateFiles(path, "*.txt"))
@@ -74,6 +75,8 @@
                 multiInsertSolutions.Add(vrp.SolveGrasp(RCL_SIZE, GraspTypes.GRASP_MULTI_ROUTE_INSERTION));
                 singleSwapSolutions.Add(vrp.SolveGrasp(RCL_SIZE, GraspTypes.GRASP_SINGLE_ROUTE_SWAP));
                 multiSwapSolutions.Add(vrp.SolveGrasp(RCL_SIZE, GraspTypes.GRASP_MULTI_ROUTE_SWAP));
+                gvnsSolutions.Add(vrp.SolveGvns(RCL_SIZE));
+                Console.WriteLine("Real gvns cost" + vrp.CalculateDistance(gvnsSolutions.Last().paths));
             }
 
             PrintGreedySolutions(greedySolutions);

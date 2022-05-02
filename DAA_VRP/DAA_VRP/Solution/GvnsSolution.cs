@@ -2,7 +2,7 @@
 {
     public class GvnsSolution : Solution
     {
-        int rclSize = -1;
+        public int  rclSize = -1;
 
         public GvnsSolution(string problemId, int numberOfClients, int rclSize)
         {

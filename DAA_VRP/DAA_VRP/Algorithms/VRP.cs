@@ -33,10 +33,16 @@
             return grasp.Solve(rclSize, type);
         }
 
-        /// <summary>
-        /// Helper function to calculate the total distance of a given path.
-        /// </summary>
-        public int CalculateDistance(List<List<int>> paths)
+        public GvnsSolution SolveGvns(int rclSize)
+        {
+            GVNS gvns = new GVNS(problem);
+            return gvns.Solve(rclSize);
+        }
+
+            /// <summary>
+            /// Helper function to calculate the total distance of a given path.
+            /// </summary>
+            public int CalculateDistance(List<List<int>> paths)
         {
             int distance = 0;
             for (int i = 0; i < paths.Count; i++)

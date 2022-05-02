@@ -46,7 +46,7 @@
 
             int originNode = path[originIndex];
             int destinationNode = path[destinationIndex];
-            GraspSolution newSolution = new GraspSolution(solution.problemId, numberOfNodes, solution.GetRclSize());
+            GraspSolution newSolution = new GraspSolution(solution.problemId, solution.numberOfClients, solution.GetRclSize());
             newSolution.SetPaths(solution.paths);
             newSolution.totalDistance = minDistance;
             newSolution.paths[index][originIndex] = destinationNode;
@@ -58,7 +58,7 @@
         /// Implements the single route swap local search
         /// </summary>
         /// <param name="solution">The current solution to explore</param>
-        public Solution Search(Problem problem, Solution solution, bool shaking = false)
+        public Solution Search(Problem problem, Solution solution)
         {
             this.distanceMatrix = problem.distanceMatrix;
             this.numberOfNodes = problem.numberOfClients;
@@ -72,7 +72,7 @@
             {
                 for (int i = 0; i < pathsToCheck.Count; i++)
                 {
-                    GraspSolution currentSolution = SwapSinglePath(bestSolution, pathsToCheck[i]);
+                    Solution currentSolution = SwapSinglePath(bestSolution, pathsToCheck[i]);
 
                     if (currentSolution.totalDistance < bestSolution.totalDistance)
                     {
@@ -90,5 +90,10 @@
             return bestSolution;
         }
 
+  
+        public Solution Shake(Problem problem, Solution solution)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

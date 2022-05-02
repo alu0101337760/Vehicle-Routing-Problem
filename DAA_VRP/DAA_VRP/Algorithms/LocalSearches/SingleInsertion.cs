@@ -9,7 +9,7 @@
         /// </summary>
         /// <param name="solution">the current solution</param>
         /// <param name="index">the index of the path to insert in</param>
-        private GraspSolution InsertSinglePath(Solution solution, int index)
+        private Solution InsertSinglePath(Solution solution, int index)
         {
             List<int> path = solution.paths[index];
             int indexToRemove = 0;
@@ -55,7 +55,7 @@
 
             int nodeToInsert = path[indexToRemove];
 
-            GraspSolution newSolution = new GraspSolution(solution.problemId, numberOfNodes, solution.GetRclSize());
+            GraspSolution newSolution = new GraspSolution(solution.problemId, solution.numberOfClients, solution.GetRclSize());
             newSolution.SetPaths(solution.paths);
             newSolution.totalDistance = minDistance;
             newSolution.paths[index].RemoveAt(indexToRemove);
@@ -64,7 +64,7 @@
             return newSolution;
         }
 
-        public Solution Search(Problem problem, Solution solution, bool shaking = false)
+        public Solution Search(Problem problem, Solution solution)
         {
             this.distanceMatrix = problem.distanceMatrix;
             this.numberOfNodes = problem.numberOfClients;
@@ -79,7 +79,7 @@
             {
                 for (int i = 0; i < pathsToCheck.Count; i++)
                 {
-                    GraspSolution currentSolution = InsertSinglePath(bestSolution, pathsToCheck[i]);
+                    Solution currentSolution = InsertSinglePath(bestSolution, pathsToCheck[i]);
 
                     if (currentSolution.totalDistance < bestSolution.totalDistance)
                     {
@@ -96,6 +96,11 @@
             }
 
             return bestSolution;
+        }
+
+        public Solution Shake(Problem problem, Solution solution)
+        {
+            throw new NotImplementedException();
         }
     }
 }
