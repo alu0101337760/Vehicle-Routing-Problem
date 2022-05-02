@@ -2,6 +2,6 @@
 {
     public interface ILocalSearch
     {
-        Solution Search(Problem problem, Solution solution);
+        Solution Search(Problem problem, Solution solution, bool shaking = false);
     }
 }

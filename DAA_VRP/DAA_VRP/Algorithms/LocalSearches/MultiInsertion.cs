@@ -2,7 +2,7 @@
 {
     public class MultiInsertion : ILocalSearch
     {
-        public Solution Search(Problem problem, Solution solution)
+        public Solution Search(Problem problem, Solution solution, bool shaking = false)
         {
             List<List<int>> distanceMatrix = problem.distanceMatrix;
             int numberOfNodes = problem.numberOfClients;

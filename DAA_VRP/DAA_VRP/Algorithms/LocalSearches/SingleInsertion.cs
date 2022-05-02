@@ -64,7 +64,7 @@
             return newSolution;
         }
 
-        public Solution Search(Problem problem, Solution solution)
+        public Solution Search(Problem problem, Solution solution, bool shaking = false)
         {
             this.distanceMatrix = problem.distanceMatrix;
             this.numberOfNodes = problem.numberOfClients;

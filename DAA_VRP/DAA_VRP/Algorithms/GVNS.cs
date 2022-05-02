@@ -26,8 +26,23 @@
             return solution;
         }
 
-        private GvnsSolution VND(GvnsSolution solution) { 
-        
+        private GvnsSolution VND(GvnsSolution solution)
+        {
+            int currentNeighborIndex = 0;
+            GvnsSolution bestSolution = solution;
+            GvnsSolution currentSolution = new GvnsSolution(solution.problemId, solution.numberOfClients, solution.GetRclSize());
+            
+            for (int i = 0; i < currentNeighborIndex; i++)
+            {
+                currentSolution = (GvnsSolution) neighborhoodStructures[i].Search(problem, (Solution)currentSolution);
+                if (currentSolution.totalDistance < bestSolution.totalDistance)
+                {
+                    bestSolution = currentSolution;
+                    currentNeighborIndex = 0;
+                }
+            }
+            
+            return solution;
         }
 
         private GvnsSolution GvnsConstructivePhase(int rclSize)
@@ -52,10 +67,14 @@
             for (int i = 0; i < 1000; i++)
             {
                 int currentNeighborIndex = 0;
+
+                candidate = Shaking(candidate, currentNeighborIndex);
+                candidate = VND(candidate);
                 
                 if (candidate.totalDistance < bestSolution.totalDistance)
                 {
-                    bestSolution = candidate;                    
+                    bestSolution = candidate;
+                    currentNeighborIndex = 0;
                 }
             }
 

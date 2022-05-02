@@ -58,7 +58,7 @@
         /// Implements the single route swap local search
         /// </summary>
         /// <param name="solution">The current solution to explore</param>
-        public Solution Search(Problem problem, Solution solution)
+        public Solution Search(Problem problem, Solution solution, bool shaking = false)
         {
             this.distanceMatrix = problem.distanceMatrix;
             this.numberOfNodes = problem.numberOfClients;
