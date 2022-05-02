@@ -70,21 +70,24 @@
         {
             Random rnd = new Random();
             int pathToRemove = rnd.Next(0, solution.paths.Count - 1);
-
-            int pathToInsert = -1;
+            
             int numberOfNodes = problem.numberOfClients;
+
+            List<int> candidatePaths = new List<int>();
             for (int i = 0; i < solution.paths.Count; i++)
             {
                 if (i != pathToRemove && solution.paths[i].Count + 1 < (numberOfNodes / solution.paths.Count) + (numberOfNodes * 0.1))
                 {
-                    pathToInsert = i;
+                    candidatePaths.Add(i);
                 }
             }
-            if(pathToInsert == -1)
+            if (candidatePaths.Count == 0)
             {
                 return solution;
             }
-            
+
+            int pathToInsert = candidatePaths[rnd.Next(0, candidatePaths.Count - 1)];            
+
             int indexToRemove = rnd.Next(1, solution.paths[pathToRemove].Count - 2);
             int positionToInsert = rnd.Next(1, solution.paths[pathToInsert].Count - 2);
 

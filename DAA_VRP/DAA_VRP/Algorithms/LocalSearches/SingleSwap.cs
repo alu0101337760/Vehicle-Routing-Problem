@@ -93,12 +93,37 @@
 
         public Solution Shake(Problem problem, Solution solution)
         {
+            
             Random rnd = new Random();
-            int pathToSwap = rnd.Next(0, solution.paths.Count - 1);
+            List<int> candidatePaths = new List<int>();
+
+            for (int i = 0; i < solution.paths.Count; i++)
+            {
+                if (solution.paths[i].Count > 2)
+                {
+                    candidatePaths.Add(i);
+                }
+            }
+
+            int pathToSwap = candidatePaths[rnd.Next(candidatePaths.Count)];
+
+
             int indexA = rnd.Next(1, solution.paths[pathToSwap].Count - 2);
-            int indexB = rnd.Next(1, solution.paths[pathToSwap].Count - 2);
-            indexB = (indexB == indexA || indexB == indexA + 1 || indexB == indexA - 1) ? indexA + 2 : indexB;
-            indexB = indexB >= solution.paths[pathToSwap].Count - 1 ? 1 : indexB;
+            
+            List<int> candidates = new List<int>();            
+            for (int i = 1; i < solution.paths[pathToSwap].Count - 2; i++)
+            {
+                if (i != indexA - 1 && i != indexA + 1 && i != indexA)                
+                {
+                    candidates.Add(i);
+                }
+            }
+            if(candidates.Count == 0)
+            {
+                return solution;
+            }
+            int indexB = candidates[rnd.Next(0, candidates.Count - 1)];
+            this.distanceMatrix = problem.distanceMatrix;
 
             distanceMatrix = problem.distanceMatrix;
             List<int> path = solution.paths[pathToSwap];
@@ -123,9 +148,29 @@
             newSolution.SetPaths(solution.paths);
             newSolution.totalDistance = minDistance;
             newSolution.paths[pathToSwap][indexA] = destinationNode;
-            newSolution.paths[pathToSwap][indexB] = originNode;         
+            newSolution.paths[pathToSwap][indexB] = originNode;
+
+            if (newSolution.totalDistance != CalculateDistance(newSolution.paths))
+            {
+                throw new Exception("Distance is not equal");
+            }
 
             return newSolution;
-        }        
+        }
+
+        public int CalculateDistance(List<List<int>> paths)
+        {
+            int distance = 0;
+            for (int i = 0; i < paths.Count; i++)
+            {
+                for (int j = 0; j < paths[i].Count - 1; j++)
+                {
+                    distance += distanceMatrix[paths[i][j]][paths[i][j + 1]];
+                }
+            }
+            return distance;
+        }
+
     }
+
 }

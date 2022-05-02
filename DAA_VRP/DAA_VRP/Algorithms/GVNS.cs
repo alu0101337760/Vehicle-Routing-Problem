@@ -38,7 +38,7 @@
             currentSolution.totalDistance = solution.totalDistance;
 
 
-            for (int i = 0; i < currentNeighborIndex; i++)
+            for (int i = 0; i <= currentNeighborIndex; i++)
             {
                 currentSolution = (GvnsSolution)neighborhoodStructures[i].Search(problem, (Solution)currentSolution);
                 if (currentSolution.totalDistance < bestSolution.totalDistance)
