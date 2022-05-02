@@ -102,22 +102,28 @@
         {
             Random rnd = new Random();
             int pathToRemove = rnd.Next(0, solution.paths.Count - 1);
+
             int originIndex = rnd.Next(1, solution.paths[pathToRemove].Count - 2);
+
             int destinationIndex = rnd.Next(1, solution.paths[pathToRemove].Count - 2);
+            destinationIndex = (destinationIndex == originIndex || destinationIndex == originIndex - 1) ? destinationIndex + 2 : destinationIndex;
+            destinationIndex = (destinationIndex > solution.paths[pathToRemove].Count - 2) ? 1 : destinationIndex;
+
             int nodeToInsert = solution.paths[pathToRemove][originIndex];
 
             List<List<int>> distanceMatrix = problem.distanceMatrix;
             List<int> path = solution.paths[pathToRemove];
 
+
             int distanceAfterRemoving = solution.totalDistance -
-                     distanceMatrix[path[originIndex]][path[originIndex + 1]] -
-                     distanceMatrix[path[originIndex - 1]][path[originIndex]] +
-                     distanceMatrix[path[originIndex - 1]][path[originIndex + 1]];
-            
+                              distanceMatrix[path[originIndex]][path[originIndex + 1]] -
+                              distanceMatrix[path[originIndex - 1]][path[originIndex]] +
+                              distanceMatrix[path[originIndex - 1]][path[originIndex + 1]];
+
             int minDistance;
             if (destinationIndex > originIndex)
             {
-               minDistance = distanceAfterRemoving +
+                minDistance = distanceAfterRemoving +
                     distanceMatrix[path[destinationIndex]][path[originIndex]] +
                     distanceMatrix[path[originIndex]][path[destinationIndex + 1]] -
                     distanceMatrix[path[destinationIndex]][path[destinationIndex + 1]];
@@ -129,7 +135,8 @@
                     distanceMatrix[path[destinationIndex - 1]][path[originIndex]] -
                     distanceMatrix[path[destinationIndex - 1]][path[destinationIndex]];
             }
-            
+
+
             GvnsSolution newSolution = new GvnsSolution(solution.problemId, solution.numberOfClients, solution.GetRclSize());
             newSolution.SetPaths(solution.paths);
             newSolution.totalDistance = minDistance;

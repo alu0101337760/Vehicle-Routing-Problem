@@ -97,8 +97,10 @@
             int pathToSwap = rnd.Next(0, solution.paths.Count - 1);
             int indexA = rnd.Next(1, solution.paths[pathToSwap].Count - 2);
             int indexB = rnd.Next(1, solution.paths[pathToSwap].Count - 2);
+            indexB = (indexB == indexA || indexB == indexA + 1 || indexB == indexA - 1) ? indexA + 2 : indexB;
+            indexB = indexB >= solution.paths[pathToSwap].Count - 1 ? 1 : indexB;
 
-            List<List<int>> distanceMatrix = problem.distanceMatrix;
+            distanceMatrix = problem.distanceMatrix;
             List<int> path = solution.paths[pathToSwap];
 
             int distanceAfterRemoving = solution.totalDistance -
@@ -121,9 +123,9 @@
             newSolution.SetPaths(solution.paths);
             newSolution.totalDistance = minDistance;
             newSolution.paths[pathToSwap][indexA] = destinationNode;
-            newSolution.paths[pathToSwap][indexB] = originNode;
-            return newSolution;
+            newSolution.paths[pathToSwap][indexB] = originNode;         
 
-        }
+            return newSolution;
+        }        
     }
 }
