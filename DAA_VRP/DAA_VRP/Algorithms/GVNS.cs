@@ -2,6 +2,18 @@
 
 namespace DAA_VRP
 {
+
+    
+    /////////// MODIFICACIÓN ////////////
+
+    public enum GvnsTypes
+    {
+        VND,
+        SEQUENTIAL_VND_1,
+        SEQUENTIAL_VND_2,
+    }
+
+    /////////////////////////////////////
     public class GVNS
     {
         Problem problem;
@@ -25,6 +37,65 @@ namespace DAA_VRP
             return (GvnsSolution)neighborhoodStructures[currentNeighborIndex].Shake(problem, (Solution)solution);
         }
 
+
+        ////////////// MODIFICACIÓN ///////////////
+
+        private GvnsSolution SequentialVndAlternativeOrder(GvnsSolution solution)
+        {
+            neighborhoodStructures = new List<ILocalSearch>{
+            new MultiInsertion(),
+            new MultiSwap(),
+            new SingleInsertion(),
+            new SingleSwap(),
+            };
+
+            int currentNeighborIndex = 0;
+            GvnsSolution bestSolution = new GvnsSolution(solution.problemId, solution.numberOfClients, solution.GetRclSize());
+            bestSolution.SetPaths(solution.paths);
+            bestSolution.rclSize = solution.GetRclSize();
+            bestSolution.totalDistance = solution.totalDistance;
+
+
+            GvnsSolution currentSolution = new GvnsSolution(solution.problemId, solution.numberOfClients, solution.GetRclSize());
+            currentSolution.SetPaths(solution.paths);
+            currentSolution.rclSize = solution.GetRclSize();
+            currentSolution.totalDistance = solution.totalDistance;
+
+            for (int i = 0; i <= currentNeighborIndex; i++)
+            {
+                currentSolution = (GvnsSolution)neighborhoodStructures[i].Search(problem, (Solution)currentSolution);
+            }
+
+            return bestSolution;
+        }
+
+
+        ///////////////////////////////////////////
+
+        ////////////// MODIFICACIÓN ///////////////
+        private GvnsSolution SequentialVND(GvnsSolution solution)
+        {
+            int currentNeighborIndex = 0;
+            GvnsSolution bestSolution = new GvnsSolution(solution.problemId, solution.numberOfClients, solution.GetRclSize());
+            bestSolution.SetPaths(solution.paths);
+            bestSolution.rclSize = solution.GetRclSize();
+            bestSolution.totalDistance = solution.totalDistance;
+
+
+            GvnsSolution currentSolution = new GvnsSolution(solution.problemId, solution.numberOfClients, solution.GetRclSize());
+            currentSolution.SetPaths(solution.paths);
+            currentSolution.rclSize = solution.GetRclSize();
+            currentSolution.totalDistance = solution.totalDistance;
+
+            for (int i = 0; i <= currentNeighborIndex; i++)
+            {
+                currentSolution = (GvnsSolution)neighborhoodStructures[i].Search(problem, (Solution)currentSolution);              
+            }
+
+            return bestSolution;
+
+        }
+        ///////////////////////////////////////////
         private GvnsSolution VND(GvnsSolution solution)
         {
             int currentNeighborIndex = 0;
@@ -65,7 +136,7 @@ namespace DAA_VRP
             return solution;
         }
 
-        public GvnsSolution Solve(int rclSize)
+        public GvnsSolution Solve(int rclSize, GvnsTypes type = GvnsTypes.VND )
         {
             GvnsSolution bestSolution = GvnsConstructivePhase(rclSize);
             int k = 0;
@@ -74,9 +145,28 @@ namespace DAA_VRP
             sw.Start();
             for (int i = 0; i < 2000; i++)
             {
-                GvnsSolution candidate = Shaking(bestSolution, k);
-            
+                GvnsSolution candidate = Shaking(bestSolution, k);            
+
+                ///////// MODIFICACIÓN //////////
                 candidate = VND(candidate);
+
+                switch(type)
+                {
+                    case GvnsTypes.VND:
+                        candidate = VND(candidate);
+                        break;
+
+                    case GvnsTypes.SEQUENTIAL_VND_1:
+                        candidate = SequentialVND(candidate);
+                        break;
+
+                    default:
+                        candidate = VND(candidate);
+                        break;
+
+                }
+
+                /////////////////////////////////
             
                 if (candidate.totalDistance < bestSolution.totalDistance)
                 {
