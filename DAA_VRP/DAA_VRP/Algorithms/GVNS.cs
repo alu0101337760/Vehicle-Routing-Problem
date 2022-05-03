@@ -3,7 +3,7 @@
 namespace DAA_VRP
 {
 
-    
+
     /////////// MODIFICACIÓN ////////////
 
     public enum GvnsTypes
@@ -42,7 +42,7 @@ namespace DAA_VRP
 
         private GvnsSolution SequentialVndAlternativeOrder(GvnsSolution solution)
         {
-            neighborhoodStructures = new List<ILocalSearch>{
+            this.neighborhoodStructures = new List<ILocalSearch>{
             new MultiInsertion(),
             new MultiSwap(),
             new SingleInsertion(),
@@ -69,10 +69,6 @@ namespace DAA_VRP
             return bestSolution;
         }
 
-
-        ///////////////////////////////////////////
-
-        ////////////// MODIFICACIÓN ///////////////
         private GvnsSolution SequentialVND(GvnsSolution solution)
         {
             int currentNeighborIndex = 0;
@@ -89,7 +85,7 @@ namespace DAA_VRP
 
             for (int i = 0; i <= currentNeighborIndex; i++)
             {
-                currentSolution = (GvnsSolution)neighborhoodStructures[i].Search(problem, (Solution)currentSolution);              
+                currentSolution = (GvnsSolution)neighborhoodStructures[i].Search(problem, (Solution)currentSolution);
             }
 
             return bestSolution;
@@ -136,7 +132,7 @@ namespace DAA_VRP
             return solution;
         }
 
-        public GvnsSolution Solve(int rclSize, GvnsTypes type = GvnsTypes.VND )
+        public GvnsSolution Solve(int rclSize, GvnsTypes type = GvnsTypes.VND)
         {
             GvnsSolution bestSolution = GvnsConstructivePhase(rclSize);
             int k = 0;
@@ -145,12 +141,12 @@ namespace DAA_VRP
             sw.Start();
             for (int i = 0; i < 2000; i++)
             {
-                GvnsSolution candidate = Shaking(bestSolution, k);            
+                GvnsSolution candidate = Shaking(bestSolution, k);
 
                 ///////// MODIFICACIÓN //////////
                 candidate = VND(candidate);
 
-                switch(type)
+                switch (type)
                 {
                     case GvnsTypes.VND:
                         candidate = VND(candidate);
@@ -160,6 +156,10 @@ namespace DAA_VRP
                         candidate = SequentialVND(candidate);
                         break;
 
+                    case GvnsTypes.SEQUENTIAL_VND_2:
+                        candidate = SequentialVndAlternativeOrder(candidate);
+                        break;
+
                     default:
                         candidate = VND(candidate);
                         break;
@@ -167,7 +167,7 @@ namespace DAA_VRP
                 }
 
                 /////////////////////////////////
-            
+
                 if (candidate.totalDistance < bestSolution.totalDistance)
                 {
                     bestSolution = candidate;
@@ -186,6 +186,6 @@ namespace DAA_VRP
             sw.Stop();
             bestSolution.elapsedMilliseconds = sw.ElapsedMilliseconds;
             return bestSolution;
-        } 
+        }
     }
 }
