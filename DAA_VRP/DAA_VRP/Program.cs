@@ -18,10 +18,10 @@
 
         public static void PrintGvnsSolutions(List<GvnsSolution> GvnsSolutions)
         {
-            Console.WriteLine(String.Format("\tfilename\tnodes\troutes\tnodes\tcost\tmilliseconds"));
+            Console.WriteLine(String.Format("\tfilename\tnodes\troutes\tcost\tmilliseconds"));
             foreach (GvnsSolution solution in GvnsSolutions)
             {
-                Console.WriteLine(solution.problemId + "\t" + solution.numberOfClients + "\t" + solution.totalDistance + "\t" + solution.elapsedMilliseconds);
+                Console.WriteLine(solution.problemId + "\t" + solution.numberOfClients + "\t"+ solution.paths.Count + "\t" + solution.totalDistance + "\t" + solution.elapsedMilliseconds);
             }
             Console.WriteLine("\n");
         }
