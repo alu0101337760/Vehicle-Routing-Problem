@@ -52,9 +52,9 @@ The 'GVNS' class implements a GVNS algorithm. The 'Solve' method takes as a para
 ### Results and conclusions
 
 #### Greedy Algorithm:
-| Size  | Cost (Size) | Time   |
+| Size  | Cost of the route | Time   |
 |-------|-------------|--------|
-| 40-2  | 40 (2)      | 227 ms |
+| 40-2  | 40 (2)      | 3 ms |
 | 40-4  | 40 (4)      | 0 ms   |
 | 40-6  | 40 (6)      | 0 ms   |
 | 40-8  | 40 (8)      | 0 ms   |
@@ -64,7 +64,7 @@ Table 1: Best results of the Greedy algorithm.
 ####  GRASP Algorithms:
 Results of the GRASP algorithms:
 #### Multi-route reinsertion as local search
-| Size  | RCL  | Cost (Size) | Time     |
+| Size  | RCL  | Cost of the route | Time     |
 |-------|------|-------------|----------|
 | 40-2  | 2    | 116         | 270 ms   |
 | 40-4  | 2    | 155         | 310 ms   |
@@ -74,7 +74,7 @@ Results of the GRASP algorithms:
 Table 2: Best results of the GRASP algorithm with multi-route reinsertion as local search.
 
 ##### Intra-route reinsertion as local search
-| Size  | RCL  | Cost (Size) | Time     |
+| Size  | RCL  | Cost of the route | Time     |
 |-------|------|-------------|----------|
 | 40-2  | 2    | 128         | 249 ms   |
 | 40-4  | 2    | 164         | 163 ms   |
@@ -84,7 +84,7 @@ Table 2: Best results of the GRASP algorithm with multi-route reinsertion as loc
 Table 3: Best results of the GRASP algorithm with intra-route reinsertion as local search.
 
 ##### Multi-route exchange as local search
-| Size  | RCL  | Cost (Size) | Time     |
+| Size  | RCL  | Cost of the route | Time     |
 |-------|------|-------------|----------|
 | 40-2  | 2    | 149         | 99 ms    |
 | 40-4  | 2    | 179         | 140 ms   |
@@ -93,23 +93,20 @@ Table 3: Best results of the GRASP algorithm with intra-route reinsertion as loc
 
 Table 4: Best results of the GRASP algorithm with multi-route exchange as local search.
 
-#### 3.3. GVNS Algorithm:
-Results of the GVNS Algorithm:
-| Size  | Cost (Size) | Time     |
-|-------|-------------|----------|
-| 40-2  | 101         | 206 ms   |
-| 40-4  | 134         | 359 ms   |
-| 40-6  | 171         | 158 ms   |
-| 40-8  | 175         | 395 ms   |
+| Size  | RCL  | Cost of the route | Time    |
+|-------|------|-------------|---------|
+| 40-2  | 2    | 141         | 77 ms   |
+| 40-4  | 2    | 183         | 99 ms   |
+| 40-6  | 2    | 244         | 115 ms  |
+| 40-8  | 2    | 314         | 43 ms   |
 
-Table 5: Best results of the GVNS algorithm.
-
+Table 5: Best results of the GRASP algorithm with intra-route exchange as local search.
 
 ### GVNS Algorithm
 
 Results of the GVNS Algorithm:
 
-| Size  | Cost (Size) | Time     |
+| Size  | Cost of the route | Time     |
 |-------|-------------|----------|
 | 40-2  | 101         | 206 ms   |
 | 40-4  | 134         | 359 ms   |
