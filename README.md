@@ -45,10 +45,10 @@ for the constructive phase, and a 'GraspType' enum used to identify the neighbor
 ### General Variable Neighbourhood Search (GVNS)
 The 'GVNS' class implements a GVNS algorithm. The 'Solve' method takes as a parameter the size of the RCL (Restricted Candidate List) that will be used to initialize the first solution. The Variable Neighborhood Descent (VND) process is carried out with the four implemented neighborhood searches, in the following order:
 
--Multi-route reinsertion: This movement involves taking elements from one route one by one and inserting them into every possible position in the rest of the routes.
--Intra-route reinsertion: For each route, this movement involves taking elements one by one and inserting them into every possible position within the same route.
--Multi-route exchange: This movement consists of performing all possible combinations of exchanges between two elements that are in different routes.
--Intra-route exchange: For each route, this movement consists of performing all possible exchanges of pairs of elements within the same route.
+- Multi-route reinsertion: This movement involves taking elements from one route one by one and inserting them into every possible position in the rest of the routes.
+- Intra-route reinsertion: For each route, this movement involves taking elements one by one and inserting them into every possible position within the same route.
+- Multi-route exchange: This movement consists of performing all possible combinations of exchanges between two elements that are in different routes.
+- Intra-route exchange: For each route, this movement consists of performing all possible exchanges of pairs of elements within the same route.
 ### Results and conclusions
 
 #### Greedy Algorithm:
