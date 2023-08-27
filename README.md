@@ -51,7 +51,7 @@ The 'GVNS' class implements a GVNS algorithm. The 'Solve' method takes as a para
 -Intra-route exchange: For each route, this movement consists of performing all possible exchanges of pairs of elements within the same route.
 ### Results and conclusions
 
-#### 3.1. Greedy Algorithm
+#### Greedy Algorithm:
 | Size  | Cost (Size) | Time   |
 |-------|-------------|--------|
 | 40-2  | 40 (2)      | 227 ms |
@@ -61,7 +61,7 @@ The 'GVNS' class implements a GVNS algorithm. The 'Solve' method takes as a para
 
 Table 1: Best results of the Greedy algorithm.
 
-#### 3.2. GRASP Algorithms
+####  GRASP Algorithms:
 Results of the GRASP algorithms:
 #### Multi-route reinsertion as local search
 | Size  | RCL  | Cost (Size) | Time     |
@@ -93,7 +93,7 @@ Table 3: Best results of the GRASP algorithm with intra-route reinsertion as loc
 
 Table 4: Best results of the GRASP algorithm with multi-route exchange as local search.
 
-#### 3.3. GVNS Algorithm
+#### 3.3. GVNS Algorithm:
 Results of the GVNS Algorithm:
 | Size  | Cost (Size) | Time     |
 |-------|-------------|----------|
@@ -104,21 +104,8 @@ Results of the GVNS Algorithm:
 
 Table 5: Best results of the GVNS algorithm.
 
-#### 4. Conclusions
-Comparing the obtained results, it's clear that the GVNS algorithm is much more efficient than the others. It is capable of finding higher-quality solutions among the implemented algorithms without significantly compromising the execution time.
 
-#### 3.2. GRASP Algorithm with Intra-route Exchange as Local Search
-
-| Size  | RCL  | Cost (Size) | Time     |
-|-------|------|-------------|----------|
-| 40-2  | 2    | 141         | 77 ms    |
-| 40-4  | 2    | 183         | 99 ms    |
-| 40-6  | 2    | 244         | 115 ms   |
-| 40-8  | 2    | 314         | 43 ms    |
-
-Table 5: Best results of the GRASP algorithm with intra-route exchange as local search.
-
-### 3.3. GVNS Algorithm
+### GVNS Algorithm
 
 Results of the GVNS Algorithm:
 
